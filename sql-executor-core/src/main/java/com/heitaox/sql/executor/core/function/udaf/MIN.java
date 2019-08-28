@@ -1,10 +1,5 @@
 package com.heitaox.sql.executor.core.function.udaf;
 
-/**
- * @Author ZhengYingjie
- * @Date 2019-08-12
- * @Description
- */
 public class MIN extends UDAF<Number,Number>{
 
     @Override

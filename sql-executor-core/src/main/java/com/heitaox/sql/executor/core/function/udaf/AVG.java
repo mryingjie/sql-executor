@@ -3,11 +3,6 @@ package com.heitaox.sql.executor.core.function.udaf;
 
 import java.math.BigDecimal;
 
-/**
- * @Author ZhengYingjie
- * @Date 2019-08-12
- * @Description
- */
 @SuppressWarnings("all")
 public class AVG extends UDAF<Number,Number> {
 

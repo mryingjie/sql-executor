@@ -8,11 +8,6 @@ import lombok.AllArgsConstructor;
 
 import java.util.List;
 
-/**
- * @Author ZhengYingjie
- * @Date 2019-08-14
- * @Description
- */
 @AllArgsConstructor
 public class LimitExecutor extends BaseExecutor {
 

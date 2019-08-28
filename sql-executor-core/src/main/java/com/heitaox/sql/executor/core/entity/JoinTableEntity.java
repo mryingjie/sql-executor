@@ -6,9 +6,6 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * @Author ZhengYingjie
- * @Date 2019-08-14
- * @Description
  * Parsing the data type obtained by the join clause in sql
  */
 @Data

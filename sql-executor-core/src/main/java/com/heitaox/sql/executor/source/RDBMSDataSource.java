@@ -11,11 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * @Author ZhengYingjie
- * @Date 2019-08-07
- * @Description
- */
 public interface RDBMSDataSource extends DataSource {
 
     /**

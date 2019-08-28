@@ -10,11 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @Author ZhengYingjie
- * @Date 2019-08-14
- * @Description
- */
 @AllArgsConstructor
 @Slf4j
 public class OrderByExecutor extends BaseExecutor{

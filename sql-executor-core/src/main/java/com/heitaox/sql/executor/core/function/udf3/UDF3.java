@@ -2,9 +2,6 @@ package com.heitaox.sql.executor.core.function.udf3;
 
 
 /**
- * @Author ZhengYingjie
- * @Date 2019-08-19
- * @Description
  * @param <I> input parameter type
  * @param <R> input parameter type
  * @param <T> input parameter type

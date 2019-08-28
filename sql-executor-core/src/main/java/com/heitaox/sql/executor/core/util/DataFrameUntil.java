@@ -12,11 +12,6 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.util.*;
 
-/**
- * @Author ZhengYingjie
- * @Date 2019-08-08
- * @Description
- */
 @SuppressWarnings("all")
 @Slf4j
 public class DataFrameUntil {

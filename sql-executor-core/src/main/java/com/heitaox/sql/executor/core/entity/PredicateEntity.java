@@ -8,9 +8,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * @Author ZhengYingjie
- * @Date 2019-08-07
- * @Description
  * The parsing condition obtained after parsing the having, where, and on clauses in SQL
  */
 @Data

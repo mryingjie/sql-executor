@@ -5,11 +5,6 @@ import lombok.Data;
 
 import java.util.List;
 
-/**
- * @Author ZhengYingjie
- * @Date 2019-08-21
- * @Description
- */
 @Data
 public class MongoDataSourceProperties {
 

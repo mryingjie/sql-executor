@@ -19,11 +19,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-/**
- * @Author ZhengYingjie
- * @Date 2019-08-21
- * @Description
- */
 @Slf4j
 public class MongoDataSource implements NoSQLDataSource {
 

@@ -10,9 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Author ZhengYingjie
- * @Date 2019-08-14
- * @Description
  * As the identification data source of the intermediate table when the join query
  */
 public  class NullDataSource implements DataSource {

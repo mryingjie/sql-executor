@@ -32,9 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static java.util.Objects.requireNonNull;
 
 /**
- * @Author ZhengYingjie
- * @Date 2019-08-06
- * @Description sql执行器
+ * sql执行器
  */
 @Slf4j
 @SuppressWarnings("unchecked")

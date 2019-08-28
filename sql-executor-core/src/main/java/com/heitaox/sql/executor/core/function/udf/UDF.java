@@ -1,9 +1,6 @@
 package com.heitaox.sql.executor.core.function.udf;
 
 /**
- * @Author ZhengYingjie
- * @Date 2019-08-09
- * @Description
  * @param <I> input parameter type
  * @param <U> output parameter type
  * the abstract class of the UDF function,

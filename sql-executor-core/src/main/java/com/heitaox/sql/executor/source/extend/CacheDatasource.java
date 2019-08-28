@@ -10,11 +10,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * @Author ZhengYingjie
- * @Date 2019-08-20
- * @Description Cached data source must have cache mode enabled
- */
 @SuppressWarnings("unchecked")
 @Slf4j
 public class CacheDatasource implements DataSource {

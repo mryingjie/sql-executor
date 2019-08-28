@@ -36,11 +36,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/**
- * @Author ZhengYingjie
- * @Date 2019-08-13
- * @Description
- */
 @Slf4j
 @SuppressWarnings("all")
 public class ElasticsearchDataSource implements NoSQLDataSource {

@@ -23,11 +23,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-/**
- * @Author ZhengYingjie
- * @Date 2019-08-14
- * @Description
- */
 @Slf4j
 @SuppressWarnings("all")
 public class JoinExecutor extends BaseExecutor {

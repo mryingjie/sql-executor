@@ -1,11 +1,6 @@
 package com.heitaox.sql.executor.core.util;
 
 
-/**
- * @Author ZhengYingjie
- * @Date 2019-08-16
- * @Description
- */
 public class StringUtil {
 
     public static int compare(String s1, String s2) {

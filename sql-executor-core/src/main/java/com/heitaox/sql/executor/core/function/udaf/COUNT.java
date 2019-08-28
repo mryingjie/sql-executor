@@ -1,10 +1,5 @@
 package com.heitaox.sql.executor.core.function.udaf;
 
-/**
- * @Author ZhengYingjie
- * @Date 2019-08-13
- * @Description
- */
 public class COUNT extends UDAF<Object,Number>{
     @Override
     public Number getInitData() {

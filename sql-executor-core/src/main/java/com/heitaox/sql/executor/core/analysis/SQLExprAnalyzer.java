@@ -18,9 +18,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * @Author ZhengYingjie
- * @Date 2019-08-07
- * @Description
  * Analyze the abstract syntax tree and transform it into the corresponding data structure
  */
 @SuppressWarnings("all")

@@ -15,11 +15,6 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-/**
- * @Author ZhengYingjie
- * @Date 2019-08-06
- * @Description 操作Excel相关文件的工具类
- */
 @Slf4j
 public class ExcelUtil {
 

@@ -27,11 +27,6 @@ import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-/**
- * @Author ZhengYingjie
- * @Date 2019-08-14
- * @Description
- */
 @Slf4j
 @AllArgsConstructor
 @SuppressWarnings("all")

@@ -10,11 +10,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @Author ZhengYingjie
- * @Date 2019-08-06
- * @Description abstract interface for all data sources
- */
 @SuppressWarnings("unchecked")
 public interface DataSource {
 
