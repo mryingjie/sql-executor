@@ -29,19 +29,19 @@
       
 
      <dependency>
-        <groupId>com.heitaox</groupId>
+        <groupId>com.github.mryingjie</groupId>
         <artifactId>sql-executor-core</artifactId>
         <version>1.0</version>
      </dependency>
      
      <dependency>
-        <groupId>com.heitaox</groupId>
+        <groupId>com.github.mryingjie</groupId>
         <artifactId>sql-executor-elasticsearch</artifactId>
         <version>1.0</version>
      </dependency>
      
      <dependency>
-        <groupId>com.heitaox</groupId>
+        <groupId>com.github.mryingjie</groupId>
         <artifactId>sql-executor-mongo</artifactId>
         <version>1.0</version>
      </dependency>
