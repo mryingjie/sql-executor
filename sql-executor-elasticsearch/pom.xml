@@ -13,7 +13,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.heitaox</groupId>
+            <groupId>com.github.mryingjie</groupId>
             <artifactId>sql-executor-core</artifactId>
             <version>${project.version}</version>
         </dependency>
