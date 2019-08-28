@@ -398,9 +398,9 @@ public class SQLExecutor {
      *
      * @param sql 执行的sql
      * @return success count
-     * @throws Exception
+     * @throws IOException IOException
      */
-    public int executeUpdate(String sql) throws Exception {
+    public int executeUpdate(String sql) throws IOException {
         int update = 0;
         List<SQLStatement> sqlStatements = SQLUtils.parseStatements(sql, "mysql");
         SQLStatement sqlStatement = sqlStatements.get(0);
