@@ -13,6 +13,9 @@
         <module>sql-executor-elasticsearch</module>
         <module>sql-executor-mongo</module>
     </modules>
+    <name>sql-executor</name>
+    <description>a sql execution engine that supports multiple types of data sources</description>
+    <url>https://github.com/mryingjie/sql-executor</url>
 
     <profiles>
         <profile>
