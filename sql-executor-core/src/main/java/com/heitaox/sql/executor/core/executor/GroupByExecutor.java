@@ -29,7 +29,6 @@ import java.util.function.BiConsumer;
 
 @Slf4j
 @AllArgsConstructor
-@SuppressWarnings("all")
 public class GroupByExecutor extends BaseExecutor {
 
     private SQLSelectGroupByClause groupBy;
@@ -305,9 +304,9 @@ public class GroupByExecutor extends BaseExecutor {
         /**
          * 这个方法实际是在准备执行函数的所需的数据  真正的执行逻辑在executeFunc方法
          *
-         * @param keysToDataList
-         * @param haveGroup
-         * @return
+         * @param keysToDataList groupBy聚合后的数据
+         * @param haveGroup 是否有group
+         * @return DataFrame
          */
         public DataFrame execute(Map<List<Object>, List<Object>> keysToDataList, boolean haveGroup) {
             DataFrame dataFrame = new DataFrame();

@@ -3,11 +3,7 @@ package com.heitaox.sql.executor.source.rdbms;
 
 import lombok.Data;
 
-/**
- * @Author ZhengYingjie
- * @Date 2019-08-12
- * @Description
- */
+
 @Data
 public class RDBMSDataSourceProperties {
 

@@ -18,11 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * @Author ZhengYingjie
- * @Date 2019-08-12
- * @Description 标准关系型数据库
- */
+
 @Data
 @Slf4j
 public class StandardSqlDataSource implements RDBMSDataSource {

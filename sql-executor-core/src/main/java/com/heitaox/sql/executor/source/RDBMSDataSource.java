@@ -21,7 +21,7 @@ public interface RDBMSDataSource extends DataSource {
      * example:
      *
      * @param sql Sql to execute query
-     * @return DataFrame<Object>
+     * @return DataFrame
      * @see StandardSqlDataSource#executeQuery(String)
      */
     DataFrame<Object> executeQuery(String sql);

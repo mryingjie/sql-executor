@@ -45,7 +45,7 @@ public interface DataSource {
      * @param valueList valueList
      * @param tableName tableName
      * @return success count
-     * @throws Exception
+     * @throws IOException IOException
      */
     int insert(List<Map<String, Object>> valueList, String tableName) throws IOException;
 
@@ -57,7 +57,7 @@ public interface DataSource {
      * @param tableName tableName
      * @param predicateEntities predicateEntities
      * @return success count
-     * @throws Exception
+     * @throws IOException IOException
      */
     int update(Map<String, Object> updateItems, List<PredicateEntity<Object>> predicateEntities, String tableName) throws IOException;
 
@@ -67,7 +67,7 @@ public interface DataSource {
      * @param tableName tableName
      * @param predicateEntities predicateEntities
      * @return success count
-     * @throws Exception
+     * @throws IOException IOException
      */
     int delete(List<PredicateEntity<Object>> predicateEntities, String tableName) throws IOException;
 }

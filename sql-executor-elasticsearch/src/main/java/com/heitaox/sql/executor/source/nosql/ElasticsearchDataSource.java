@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
-@SuppressWarnings("all")
 public class ElasticsearchDataSource implements NoSQLDataSource {
 
     private RestHighLevelClient client;
@@ -115,7 +114,7 @@ public class ElasticsearchDataSource implements NoSQLDataSource {
      * @param table tableNme
      * @param tableAlias tableAlias
      * @param predicateEntities Ascertain condition
-     * @return
+     * @return DataFrame
      */
     @Override
     public DataFrame queryByPredicate(String table, String tableAlias, List<PredicateEntity<Object>> predicateEntities) {

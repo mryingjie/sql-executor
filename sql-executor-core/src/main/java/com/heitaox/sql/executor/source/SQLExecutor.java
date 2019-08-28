@@ -362,9 +362,9 @@ public class SQLExecutor {
      *
      * @param sql insert sql
      * @return success count
-     * @throws Exception
+     * @throws IOException IOException
      */
-    public int executeInsert(String sql) throws Exception {
+    public int executeInsert(String sql) throws IOException {
         //使用mysql的标准sql解析sql
         int insert = 0;
         List<SQLStatement> sqlStatements = SQLUtils.parseStatements(sql, "mysql");

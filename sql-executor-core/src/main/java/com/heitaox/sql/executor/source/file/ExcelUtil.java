@@ -116,11 +116,11 @@ public class ExcelUtil {
     /**
      * 读取excel
      *
-     * @param filePath
-     * @return List<Map>
-     * @throws Exception
+     * @param filePath filePath
+     * @return List
+     * @throws IOException IOException
      */
-    public static List<Map<String, String>> readExcel(String filePath) throws Exception {
+    public static List<Map<String, String>> readExcel(String filePath) throws IOException {
         File file = new File(filePath);
         if (!file.exists()) {
             throw new RuntimeException("file [" + filePath + "] not fond");
