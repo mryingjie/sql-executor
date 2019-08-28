@@ -12,11 +12,7 @@
     <artifactId>sql-executor-core</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>compile</scope>
-        </dependency>
+
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
@@ -64,12 +60,7 @@
             <artifactId>commons-dbutils</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.16</version>
-            <scope>runtime</scope>
-        </dependency>
+
     </dependencies>
 
 </project>
