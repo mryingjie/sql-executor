@@ -6,6 +6,7 @@ import com.heitaox.sql.executor.source.rdbms.StandardSqlDataSource;
 import joinery.DataFrame;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ public interface RDBMSDataSource extends DataSource {
      * @return number of successful lines
      * @see StandardSqlDataSource#executeUpdate(String)
      */
-    int executeUpdate(String sql);
+    int executeUpdate(String sql) throws SQLException;
 
 
     // /**

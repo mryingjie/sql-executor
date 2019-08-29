@@ -4,6 +4,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnionOperator;
 import com.heitaox.sql.executor.core.entity.PredicateEntity;
+import com.heitaox.sql.executor.core.exception.NotSupportException;
 import joinery.DataFrame;
 import lombok.extern.slf4j.Slf4j;
 
@@ -85,7 +86,7 @@ public class DataFrameUntil {
         } else if (SQLJoinTableSource.JoinType.FULL_OUTER_JOIN.equals(joinType)) {
             dfJoinType = DataFrame.JoinType.OUTER;
         } else {
-            throw new RuntimeException("not support this joinType of:" + joinType);
+            throw new NotSupportException("not support this joinType of:" + joinType);
         }
         return dfJoinType;
     }
@@ -137,7 +138,7 @@ public class DataFrameUntil {
             dataFrame = leftDf;
 
         }else{
-            throw new RuntimeException();
+            throw new NotSupportException("SQLUnionOperator only support 'union' and 'union all' , not support SQLUnionOperator of '"+operator.toString()+"'");
         }
         return dataFrame;
     }

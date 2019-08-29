@@ -106,17 +106,11 @@ public class StandardSqlDataSource implements RDBMSDataSource {
     }
 
     @Override
-    public int executeUpdate(String sql) {
+    public int executeUpdate(String sql) throws SQLException {
         int i = 0;
-        try {
-            Connection connection = dataSource.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            i = preparedStatement.executeUpdate();
-
-        } catch (SQLException e) {
-            log.error("insert sql execute failed,sql:{}", sql, e);
-            throw new RuntimeException(e);
-        }
+        Connection connection = dataSource.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        i = preparedStatement.executeUpdate();
         return i;
     }
 

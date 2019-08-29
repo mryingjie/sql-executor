@@ -7,9 +7,10 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.heitaox.sql.executor.core.analysis.SQLExprAnalyzer;
 import com.heitaox.sql.executor.core.entity.JoinTableEntity;
 import com.heitaox.sql.executor.core.entity.PredicateEntity;
+import com.heitaox.sql.executor.core.exception.NotSupportException;
 import com.heitaox.sql.executor.core.util.DataFrameUntil;
 import com.heitaox.sql.executor.source.DataSource;
-import com.heitaox.sql.executor.source.SQLExecutor;
+import com.heitaox.sql.executor.SQLExecutor;
 import com.heitaox.sql.executor.source.extend.NullDataSource;
 import joinery.DataFrame;
 import lombok.extern.slf4j.Slf4j;
@@ -153,10 +154,10 @@ public class JoinExecutor extends BaseExecutor {
 
         for (PredicateEntity<Object> condition : conditions) {
             if (condition.getConnecSymbol() != null && !condition.getConnecSymbol().equals(SQLBinaryOperator.BooleanAnd)) {
-                throw new RuntimeException("on condition only support AND Operator now");
+                throw new NotSupportException("on condition only support 'AND' operator now,not support 'OR' operator");
             }
             if (condition.getPredicateSymbol() != null && !condition.getPredicateSymbol().equals(SQLBinaryOperator.Equality)) {
-                throw new RuntimeException("on condition only support = Operator now");
+                throw new NotSupportException("on condition only support '=' operator now,not support other operator");
             }
 
             if (condition.getPredicateSymbol() != null) {
@@ -164,16 +165,16 @@ public class JoinExecutor extends BaseExecutor {
                 String value = (String) condition.getValue();
 
                 if (leftFiledToIndex.get(field) != null && rightFieldToIndex.get(field) != null) {
-                    throw new RuntimeException(" Column " + field + " in on clause is ambiguous , please try to use a table alias to solve this problem");
+                    throw new RuntimeException(" Column " + field + " in on clause is ambiguous , please try to use a table alias to solve this problem or is a empty dataframe?");
                 }
                 if (leftFiledToIndex.get(value) != null && rightFieldToIndex.get(value) != null) {
-                    throw new RuntimeException(" Column " + value + " in on clause is ambiguous , please try to use a table alias to solve this problem");
+                    throw new RuntimeException(" Column " + value + " in on clause is ambiguous , please try to use a table alias to solve this problem or is a empty dataframe?");
                 }
                 if (leftFiledToIndex.get(field) == null && rightFieldToIndex.get(field) == null) {
-                    throw new RuntimeException(" Column " + field + " in on clause is not find , please try to use a table alias to solve this problem");
+                    throw new RuntimeException(" Column " + field + " in on clause is not find , please try to use a table alias to solve this problem or is a empty dataframe?");
                 }
                 if (leftFiledToIndex.get(value) == null && rightFieldToIndex.get(value) == null) {
-                    throw new RuntimeException(" Column " + value + " in on clause is not find , please try to use a table alias to solve this problem");
+                    throw new RuntimeException(" Column " + value + " in on clause is not find , please try to use a table alias to solve this problem or is a empty dataframe?");
                 }
                 if (leftFiledToIndex.get(field) != null) {
                     leftOnIndex.add(leftFiledToIndex.get(field));

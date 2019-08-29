@@ -2,6 +2,7 @@ package com.heitaox.sql.executor.source.nosql;
 
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.heitaox.sql.executor.core.entity.PredicateEntity;
+import com.heitaox.sql.executor.core.exception.NotSupportException;
 import com.heitaox.sql.executor.core.util.DataFrameUntil;
 import com.heitaox.sql.executor.source.NoSQLDataSource;
 import joinery.DataFrame;
@@ -59,7 +60,7 @@ public class ElasticsearchDataSource implements NoSQLDataSource {
         SearchRequest searchRequest = new SearchRequest(tableNme);
         SearchResponse searchResponse = null;
         try {
-            log.info("query all data with index [{}] in es",tableNme);
+            log.warn("query all data with index [{}] in es", tableNme);
             searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
         } catch (IOException e) {
             log.error("Query es to get data failed by IOException", e);
@@ -105,14 +106,15 @@ public class ElasticsearchDataSource implements NoSQLDataSource {
         if (df != null) {
             DataFrameUntil.setColumnTableAlias(df, tableAlias);
         }
-        return df == null?new DataFrame<>():df;
+        return df == null ? new DataFrame<>() : df;
     }
 
 
     /**
      * 如果是中文注意分词
-     * @param table tableNme
-     * @param tableAlias tableAlias
+     *
+     * @param table             tableNme
+     * @param tableAlias        tableAlias
      * @param predicateEntities Ascertain condition
      * @return DataFrame
      */
@@ -127,7 +129,9 @@ public class ElasticsearchDataSource implements NoSQLDataSource {
         sourceBuilder.query(boolQueryBuilder);
         SearchRequest searchRequest = new SearchRequest(table);
         searchRequest.source(sourceBuilder);
-        log.info("query dsl:[{}]",boolQueryBuilder.toString());
+        if (log.isDebugEnabled()) {
+            log.debug("query dsl:[{}]", boolQueryBuilder.toString());
+        }
         SearchResponse searchResponse = null;
         try {
             searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
@@ -170,7 +174,7 @@ public class ElasticsearchDataSource implements NoSQLDataSource {
                 if (SQLBinaryOperator.BooleanAnd.equals(entity.getConnecSymbol())) {
                     continue;
                 } else {
-                    throw new RuntimeException("MongoDataSource does not currently support the (SQLBinaryOperator-OR) syntax in the where clause.");
+                    throw new NotSupportException("MongoDataSource does not currently support the (SQLBinaryOperator-OR) syntax in the where clause.");
                 }
             }
             String field = entity.getField();
@@ -182,10 +186,10 @@ public class ElasticsearchDataSource implements NoSQLDataSource {
                 Boolean not = entity.getNot();
                 if (not) {
                     // not in
-                    must.add(QueryBuilders.termsQuery(field, sqlValues.toArray()));
+                    mustNot.add(QueryBuilders.termsQuery(field, sqlValues.toArray()));
                 } else {
                     // in
-                    mustNot.add(QueryBuilders.termsQuery(field, sqlValues.toArray()));
+                    must.add(QueryBuilders.termsQuery(field, sqlValues.toArray()));
                 }
             } else {
                 //普通筛选器
@@ -269,7 +273,7 @@ public class ElasticsearchDataSource implements NoSQLDataSource {
 
     @Override
     public int update(Map<String, Object> updateItems, List<PredicateEntity<Object>> predicateEntities, String tableName) throws IOException {
-        if(updateItems == null || updateItems.size()==0 ){
+        if (updateItems == null || updateItems.size() == 0) {
             return 0;
         }
         UpdateByQueryRequest updateByQueryRequest = new UpdateByQueryRequest(tableName);
@@ -277,14 +281,14 @@ public class ElasticsearchDataSource implements NoSQLDataSource {
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Object> entry : updateItems.entrySet()) {
             Object value = entry.getValue();
-            if(value instanceof String){
+            if (value instanceof String) {
                 value = "'" + value.toString() + "'";
             }
             sb.append(updateScriptContant).append(entry.getKey()).append("=").append(value).append(";");
         }
         updateByQueryRequest.setScript(new Script(sb.toString()));
         BulkByScrollResponse bulkByScrollResponse = client.updateByQuery(updateByQueryRequest, RequestOptions.DEFAULT);
-        return (int)bulkByScrollResponse.getUpdated();
+        return (int) bulkByScrollResponse.getUpdated();
     }
 
     @Override
@@ -293,7 +297,7 @@ public class ElasticsearchDataSource implements NoSQLDataSource {
         DeleteByQueryRequest deleteByQueryRequest = new DeleteByQueryRequest(tableName);
         deleteByQueryRequest.setQuery(transPredicateToBoolQueryBuilder(predicateEntities));
         BulkByScrollResponse bulkByScrollResponse = client.deleteByQuery(deleteByQueryRequest, RequestOptions.DEFAULT);
-        return (int)bulkByScrollResponse.getUpdated();
+        return (int) bulkByScrollResponse.getUpdated();
     }
 
 

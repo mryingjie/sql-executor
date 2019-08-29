@@ -2,6 +2,7 @@ package com.heitaox.sql.executor.source.nosql;
 
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.heitaox.sql.executor.core.entity.PredicateEntity;
+import com.heitaox.sql.executor.core.exception.NotSupportException;
 import com.heitaox.sql.executor.core.util.DataFrameUntil;
 import com.heitaox.sql.executor.source.NoSQLDataSource;
 import com.mongodb.MongoClientSettings;
@@ -135,7 +136,7 @@ public class MongoDataSource implements NoSQLDataSource {
                 if (SQLBinaryOperator.BooleanAnd.equals(entity.getConnecSymbol())) {
                     continue;
                 } else {
-                    throw new RuntimeException("MongoDataSource does not currently support the (SQLBinaryOperator-OR) syntax in the where clause.");
+                    throw new NotSupportException("MongoDataSource does not currently support the (SQLBinaryOperator-OR) syntax in the where clause.");
                 }
             }
             String field = entity.getField();

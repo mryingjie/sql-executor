@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.heitaox.sql.executor.core.analysis.SQLExprAnalyzer;
 import com.heitaox.sql.executor.core.entity.PredicateEntity;
+import com.heitaox.sql.executor.core.exception.ErrorSQLException;
+import com.heitaox.sql.executor.core.exception.NotSupportException;
 import com.heitaox.sql.executor.core.function.udaf.COUNT;
 import com.heitaox.sql.executor.core.function.udaf.UDAF;
 import com.heitaox.sql.executor.core.function.udf.UDF;
@@ -112,7 +114,7 @@ public class GroupByExecutor extends BaseExecutor {
                 // UDF函数
                 Class aClass = funcMap.get(((SQLMethodInvokeExpr) expr).getMethodName().toLowerCase());
                 if (aClass == null) {
-                    throw new RuntimeException("can not find the method with name[" + ((SQLMethodInvokeExpr) expr).getMethodName() + "]");
+                    throw new NotSupportException("can not find the method with name[" + ((SQLMethodInvokeExpr) expr).getMethodName() + "]");
                 }
                 List<SQLExpr> parameters = ((SQLMethodInvokeExpr) expr).getParameters();
                 if (parameters.size() == 1) {
@@ -202,7 +204,7 @@ public class GroupByExecutor extends BaseExecutor {
                 // UDAF函数
                 Class aClass = funcMap.get(((SQLAggregateExpr) expr).getMethodName().toLowerCase());
                 if (aClass == null) {
-                    throw new RuntimeException("can not find the method with name[" + ((SQLAggregateExpr) expr).getMethodName() + "]");
+                    throw new NotSupportException("can not find the method with name[" + ((SQLAggregateExpr) expr).getMethodName() + "]");
                 }
                 List<SQLExpr> arguments = ((SQLAggregateExpr) expr).getArguments();
 
@@ -372,7 +374,7 @@ public class GroupByExecutor extends BaseExecutor {
                         }
                     }
                     if (dataFrame.length() != 0 && dataFrame.length() != columnValue.size()) {
-                        throw new RuntimeException("sql error: udaf function and (udf function or simple column) cannot appear at the same timet ");
+                        throw new ErrorSQLException("sql error: udaf function and (udf function or simple column) cannot appear at the same time ");
                     }
                     dataFrame.add(alias, columnValue);
 
@@ -385,7 +387,7 @@ public class GroupByExecutor extends BaseExecutor {
                         columnValue.add(res);
                     }
                     if (dataFrame.length() != 0 && dataFrame.length() != columnValue.size()) {
-                        throw new RuntimeException("sql error: udaf function and (udf function or simple column) cannot appear at the same timet ");
+                        throw new ErrorSQLException("sql error: udaf function and (udf function or simple column) cannot appear at the same timet ");
                     }
 
                     dataFrame.add(alias, columnValue);

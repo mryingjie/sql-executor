@@ -7,8 +7,9 @@ import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.heitaox.sql.executor.core.entity.JoinTableEntity;
 import com.heitaox.sql.executor.core.entity.PredicateEntity;
+import com.heitaox.sql.executor.core.exception.ErrorSQLException;
 import com.heitaox.sql.executor.core.util.StringUtil;
-import com.heitaox.sql.executor.source.SQLExecutor;
+import com.heitaox.sql.executor.SQLExecutor;
 import joinery.DataFrame;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class SQLExprAnalyzer {
             String subSql = sqlInSubQueryExpr.subQuery.toString();
             DataFrame dataFrame = sqlExecutor.executeQuery(subSql);
             if (dataFrame.size() > 1) {
-                throw new RuntimeException("error sql: subQuery need one column of data but find more then one");
+                throw new ErrorSQLException("error sql: subQuery need one column of data but find more then one");
             }
             List<SQLExpr> sqlExprs = new ArrayList<>();
             for (int i = 0; i < dataFrame.length(); i++) {
@@ -98,7 +99,7 @@ public class SQLExprAnalyzer {
             String subSql = right.toString();
             DataFrame dataFrame = sqlExecutor.executeQuery(subSql);
             if (dataFrame.length() > 1 || dataFrame.size() > 1) {
-                throw new RuntimeException("error sql: subQuery need a value but find more then one");
+                throw new ErrorSQLException("error sql: subQuery need a value but find more then one");
             }
 
             Object o = dataFrame.get(0, 0);
@@ -109,7 +110,7 @@ public class SQLExprAnalyzer {
             String subSql = ((SQLAnyExpr) right).getSubQuery().toString();
             DataFrame dataFrame = sqlExecutor.executeQuery(subSql);
             if (dataFrame.size() > 1) {
-                throw new RuntimeException("error sql: subQuery need one column of data but find more then one");
+                throw new ErrorSQLException("error sql: subQuery need one column of data but find more then one");
             }
             SQLIdentifierExpr subRight = new SQLIdentifierExpr();
             if (dataFrame.length() == 0) {
@@ -139,7 +140,7 @@ public class SQLExprAnalyzer {
             String subSql = ((SQLAllExpr) right).getSubQuery().toString();
             DataFrame dataFrame = sqlExecutor.executeQuery(subSql);
             if (dataFrame.size() > 1) {
-                throw new RuntimeException("error sql: subQuery need one column of data but find more then one");
+                throw new ErrorSQLException("error sql: subQuery need one column of data but find more then one");
             }
             SQLIdentifierExpr subRight = new SQLIdentifierExpr();
             if (dataFrame.length() == 0) {

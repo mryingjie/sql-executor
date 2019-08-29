@@ -4,7 +4,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.heitaox.sql.executor.core.analysis.SQLExprAnalyzer;
 import com.heitaox.sql.executor.core.entity.PredicateEntity;
 import com.heitaox.sql.executor.core.util.DataFrameUntil;
-import com.heitaox.sql.executor.source.SQLExecutor;
+import com.heitaox.sql.executor.SQLExecutor;
 import joinery.DataFrame;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.heitaox.sql.executor.source;
+package com.heitaox.sql.executor;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -8,6 +8,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.heitaox.sql.executor.core.analysis.SQLExprAnalyzer;
 import com.heitaox.sql.executor.core.entity.PredicateEntity;
+import com.heitaox.sql.executor.core.exception.NotSupportException;
 import com.heitaox.sql.executor.core.executor.*;
 import com.heitaox.sql.executor.core.function.udaf.AVG;
 import com.heitaox.sql.executor.core.function.udaf.COUNT;
@@ -16,6 +17,10 @@ import com.heitaox.sql.executor.core.function.udaf.SUM;
 import com.heitaox.sql.executor.core.function.udf3.CONCAT;
 import com.heitaox.sql.executor.core.function.udf3.IF;
 import com.heitaox.sql.executor.core.util.DataFrameUntil;
+import com.heitaox.sql.executor.source.DataSource;
+import com.heitaox.sql.executor.source.FileDataSource;
+import com.heitaox.sql.executor.source.NoSQLDataSource;
+import com.heitaox.sql.executor.source.RDBMSDataSource;
 import com.heitaox.sql.executor.source.extend.CacheDatasource;
 import joinery.DataFrame;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +61,6 @@ public class SQLExecutor {
         funcMap.put("avg", AVG.class);
         funcMap.put("count", COUNT.class);
         funcMap.put("if", IF.class);
-        funcMap.put("CONCAT", CONCAT.class);
         funcMap.put("concat", CONCAT.class);
     }
 
@@ -191,7 +196,7 @@ public class SQLExecutor {
                 columnToIndex = DataFrameUntil.computeFiledToIndex(df);
                 df = analysisAndExecuteSimpleSQL(df, columnToIndex, sqlSelectQueryBlock, tableAlias, false);
             } else {
-                throw new RuntimeException("unknow dataSource Type of " + dataSource.getClass().getTypeName());
+                throw new NotSupportException("unknow dataSource Type of " + dataSource.getClass().getTypeName());
             }
 
         } else if (table instanceof SQLJoinTableSource) {
@@ -272,7 +277,7 @@ public class SQLExecutor {
             }
 
         } else {
-            throw new RuntimeException("executeQuery only receive sql of query , please use other method");
+            throw new NotSupportException("executeQuery only receive sql of query , please use other method");
         }
 
         // 重新命名表头 将xxx.  删除
@@ -338,7 +343,7 @@ public class SQLExecutor {
 
     public <T> List<T> executeQuery(String sql, Class<T> resultClass) throws Exception {
         if (resultClass == null) {
-            throw new RuntimeException("resultClass can not be empty");
+            throw new NullPointerException("resultClass can not be empty");
         }
 
         DataFrame df = executeQuery(sql);
@@ -363,8 +368,9 @@ public class SQLExecutor {
      * @param sql insert sql
      * @return success count
      * @throws IOException IOException
+     * @throws SQLException SQLException
      */
-    public int executeInsert(String sql) throws IOException {
+    public int executeInsert(String sql) throws IOException, SQLException {
         //使用mysql的标准sql解析sql
         int insert = 0;
         List<SQLStatement> sqlStatements = SQLUtils.parseStatements(sql, "mysql");
@@ -383,7 +389,7 @@ public class SQLExecutor {
                 insert = dataSource.insert(valueList, tableName);
             }
         } else {
-            throw new RuntimeException("executeInsert only receive sql of insert , please use other method");
+            throw new NotSupportException("executeInsert only receive sql of insert , please use other method");
 
         }
 
@@ -399,8 +405,9 @@ public class SQLExecutor {
      * @param sql 执行的sql
      * @return success count
      * @throws IOException IOException
+     * @throws SQLException SQLException
      */
-    public int executeUpdate(String sql) throws IOException {
+    public int executeUpdate(String sql) throws IOException, SQLException {
         int update = 0;
         List<SQLStatement> sqlStatements = SQLUtils.parseStatements(sql, "mysql");
         SQLStatement sqlStatement = sqlStatements.get(0);
@@ -420,14 +427,21 @@ public class SQLExecutor {
                 update = dataSource.update(updateItems, predicateEntities, tableName);
             }
         } else {
-            throw new RuntimeException("executeInsert only receive sql of update , please use other method");
+            throw new NotSupportException("executeUpdate only receive sql of update , please use other method");
 
         }
 
         return update;
     }
 
-    public int executeDelete(String sql) throws IOException {
+    /**
+     * delete sql only support delete from table where ,not support drop table
+     * @param sql delete sql
+     * @return delete success count
+     * @throws IOException IOException
+     * @throws SQLException SQLException
+     */
+    public int executeDelete(String sql) throws IOException, SQLException {
         int delete = 0;
         List<SQLStatement> sqlStatements = SQLUtils.parseStatements(sql, "mysql");
         SQLStatement sqlStatement = sqlStatements.get(0);
@@ -449,7 +463,7 @@ public class SQLExecutor {
                 delete = dataSource.delete(predicateEntities, tableName);
             }
         } else {
-            throw new RuntimeException("executeInsert only receive sql of delete , please use other method");
+            throw new NotSupportException("executeDelete only receive sql of delete , please use other method");
 
         }
         return delete;

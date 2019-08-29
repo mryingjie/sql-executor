@@ -1,6 +1,7 @@
 package com.heitaox.sql.executor.source.file;
 
 import com.heitaox.sql.executor.core.entity.PredicateEntity;
+import com.heitaox.sql.executor.core.exception.NotSupportException;
 import com.heitaox.sql.executor.core.util.DataFrameUntil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.*;
@@ -21,7 +22,7 @@ public class ExcelUtil {
     public static String readExcelHead(String filePath) throws IOException {
         File file = new File(filePath);
         if (!file.exists()) {
-            throw new RuntimeException("file [" + filePath + "] not fond");
+            throw new FileNotFoundException("file [" + filePath + "] not fond");
         }
         String suffix = getSuffix(filePath);
 
@@ -123,7 +124,7 @@ public class ExcelUtil {
     public static List<Map<String, String>> readExcel(String filePath) throws IOException {
         File file = new File(filePath);
         if (!file.exists()) {
-            throw new RuntimeException("file [" + filePath + "] not fond");
+            throw new FileNotFoundException("file [" + filePath + "] not fond");
         }
         String suffix = getSuffix(filePath);
 
@@ -149,7 +150,7 @@ public class ExcelUtil {
         } else if (filePath.contains(".csv")) {
             suffix = ".csv";
         } else {
-            throw new RuntimeException("file [" + filePath + "] is not supported. Please use a file in .xls or .xlsx or .csv format ");
+            throw new NotSupportException("file [" + filePath + "] is not supported. Please use a file in .xls or .xlsx or .csv format ");
         }
         return suffix;
     }
