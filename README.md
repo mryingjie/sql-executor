@@ -31,19 +31,19 @@
      <dependency>
         <groupId>com.github.mryingjie</groupId>
         <artifactId>sql-executor-core</artifactId>
-        <version>1.0</version>
+        <version>1.1</version>
      </dependency>
      
      <dependency>
         <groupId>com.github.mryingjie</groupId>
         <artifactId>sql-executor-elasticsearch</artifactId>
-        <version>1.0</version>
+        <version>1.1</version>
      </dependency>
      
      <dependency>
         <groupId>com.github.mryingjie</groupId>
         <artifactId>sql-executor-mongo</artifactId>
-        <version>1.0</version>
+        <version>1.1</version>
      </dependency>
 ```
 快速开始案例  
@@ -380,13 +380,13 @@ public class App {
 去es中匹配对应的表中字段分词后的结果，匹配到就查询出来。而不是单纯的相等不相等的关系，使用的时候请一定测试结果是否是预期的效果。
 例如：name :'张三'  在es中'张三'可能会被分词器分为'张'和'三' 。如果where name = '张' 或 where name = '三' 都会匹配到，但是where name = '张三' 匹配不到。如果在es中'张三'被分词器分为'张'、'三'、'张三'。那么where name = '张三' 就可以匹配到。而且如果执行的是更新删除操作，会有延迟，如果刚执行完更新删除操作就查询可能会查询不到。
 ### 以后的更新展望
-1、SQLExecutor目前并不是线程安全的类，在多线程的情境下请谨慎使用，在以后的更新中会支持多线程下的使用。  
-2、目前不支持从HDFS上读取文件，未来会支持。  
-3、目前只支持UDF函数和UDAF函数 在以后的更新中会慢慢增加对UDTF函数以及window函数的支持
+1、目前不支持从HDFS上读取文件，未来会支持。  
+2、目前只支持UDF函数和UDAF函数 在以后的更新中会慢慢增加对UDTF函数以及window函数的支持。
+3、目前默认支持的函数依然较少，以后的更新中将增加更多的函数实现。
 
 
 ### 作者的一些话
-这个工具是本人第一个也是第一次完整的开源一个项目。第一版从开始到发布历时大概一个月左右，完全是在本人工作之余即兴而做，项目中的所有代码均为本人自己手写和查阅相关api资料所得。由于经验不足，以及自己的能力问题可能会有很多需要改进的地方，和潜在的没有发现的bug。如果哪位大神看到哪里有什么需要改进的地方或bug请联系我，万分感谢！！！  
+这个工具是本人第一个也是第一次完整的开源一个项目。第一版从开始到发布历时大概一个月左右，完全是在本人工作之余即兴而做，项目中的所有代码均为本人自己手写和查阅相关api资料所得。由于经验不足，以及自己的能力问题可能会有很多需要改进的地方，和潜在的bug。如果哪位大神看到哪里有什么需要改进的地方或bug请联系我，万分感谢！！！  
 联系方式：  
 微信号：wxid_8sbv70n9eak322  
 邮箱：veavalon@163.com
