@@ -14,6 +14,13 @@ import com.heitaox.sql.executor.core.function.udaf.AVG;
 import com.heitaox.sql.executor.core.function.udaf.COUNT;
 import com.heitaox.sql.executor.core.function.udaf.MAX;
 import com.heitaox.sql.executor.core.function.udaf.SUM;
+import com.heitaox.sql.executor.core.function.udf.ABS;
+import com.heitaox.sql.executor.core.function.udf.LENGTH;
+import com.heitaox.sql.executor.core.function.udf.LOWER;
+import com.heitaox.sql.executor.core.function.udf.UPPER;
+import com.heitaox.sql.executor.core.function.udf2.IFNULL;
+import com.heitaox.sql.executor.core.function.udf2.LEFT;
+import com.heitaox.sql.executor.core.function.udf2.RIGHT;
 import com.heitaox.sql.executor.core.function.udf3.CONCAT;
 import com.heitaox.sql.executor.core.function.udf3.IF;
 import com.heitaox.sql.executor.core.util.DataFrameUntil;
@@ -62,6 +69,13 @@ public class SQLExecutor {
         funcMap.put("count", COUNT.class);
         funcMap.put("if", IF.class);
         funcMap.put("concat", CONCAT.class);
+        funcMap.put("ifnull", IFNULL.class);
+        funcMap.put("abs", ABS.class);
+        funcMap.put("upper", UPPER.class);
+        funcMap.put("length", LENGTH.class);
+        funcMap.put("lower", LOWER.class);
+        funcMap.put("left", LEFT.class);
+        funcMap.put("right", RIGHT.class);
     }
 
     private SQLExecutor() {

@@ -103,7 +103,7 @@ public interface RDBMSDataSource extends DataSource {
      * @return number of successful lines
      */
     @Override
-    default int insert(List<Map<String, Object>> valueList, String tableName) {
+    default int insert(List<Map<String, Object>> valueList, String tableName) throws SQLException {
         if (valueList != null && valueList.size() > 0) {
             StringBuilder sb = new StringBuilder();
             sb.append("insert into ").append(tableName).append("(");
@@ -128,7 +128,7 @@ public interface RDBMSDataSource extends DataSource {
     }
 
     @Override
-    default int update(Map<String, Object> updateItems, List<PredicateEntity<Object>> predicateEntities, String tableName) throws IOException {
+    default int update(Map<String, Object> updateItems, List<PredicateEntity<Object>> predicateEntities, String tableName) throws IOException, SQLException {
         if (updateItems != null && updateItems.size() > 0) {
             final StringBuilder sb = new StringBuilder("update ");
             sb.append(tableName).append(" ").append("set ");
@@ -152,7 +152,7 @@ public interface RDBMSDataSource extends DataSource {
     }
 
     @Override
-    default int delete(List<PredicateEntity<Object>> predicateEntities, String tableName) {
+    default int delete(List<PredicateEntity<Object>> predicateEntities, String tableName) throws SQLException {
         final StringBuilder sb = new StringBuilder("delete from ");
         sb.append(tableName);
         if (predicateEntities != null && predicateEntities.size() > 0) {

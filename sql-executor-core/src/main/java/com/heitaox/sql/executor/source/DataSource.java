@@ -7,6 +7,7 @@ import com.heitaox.sql.executor.core.util.DataFrameUntil;
 import joinery.DataFrame;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -46,8 +47,9 @@ public interface DataSource {
      * @param tableName tableName
      * @return success count
      * @throws IOException IOException
+     * @throws SQLException SQLException
      */
-    int insert(List<Map<String, Object>> valueList, String tableName) throws IOException;
+    int insert(List<Map<String, Object>> valueList, String tableName) throws IOException, SQLException;
 
 
     /**
@@ -58,8 +60,9 @@ public interface DataSource {
      * @param predicateEntities predicateEntities
      * @return success count
      * @throws IOException IOException
+     * @throws SQLException SQLException
      */
-    int update(Map<String, Object> updateItems, List<PredicateEntity<Object>> predicateEntities, String tableName) throws IOException;
+    int update(Map<String, Object> updateItems, List<PredicateEntity<Object>> predicateEntities, String tableName) throws IOException, SQLException;
 
     /**
      *
@@ -68,6 +71,7 @@ public interface DataSource {
      * @param predicateEntities predicateEntities
      * @return success count
      * @throws IOException IOException
+     * @throws SQLException SQLException
      */
-    int delete(List<PredicateEntity<Object>> predicateEntities, String tableName) throws IOException;
+    int delete(List<PredicateEntity<Object>> predicateEntities, String tableName) throws IOException, SQLException;
 }
