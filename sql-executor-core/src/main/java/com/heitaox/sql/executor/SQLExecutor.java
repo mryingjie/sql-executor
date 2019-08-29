@@ -14,15 +14,14 @@ import com.heitaox.sql.executor.core.function.udaf.AVG;
 import com.heitaox.sql.executor.core.function.udaf.COUNT;
 import com.heitaox.sql.executor.core.function.udaf.MAX;
 import com.heitaox.sql.executor.core.function.udaf.SUM;
-import com.heitaox.sql.executor.core.function.udf.ABS;
-import com.heitaox.sql.executor.core.function.udf.LENGTH;
-import com.heitaox.sql.executor.core.function.udf.LOWER;
-import com.heitaox.sql.executor.core.function.udf.UPPER;
+import com.heitaox.sql.executor.core.function.udf.*;
 import com.heitaox.sql.executor.core.function.udf2.IFNULL;
 import com.heitaox.sql.executor.core.function.udf2.LEFT;
 import com.heitaox.sql.executor.core.function.udf2.RIGHT;
 import com.heitaox.sql.executor.core.function.udf3.CONCAT;
 import com.heitaox.sql.executor.core.function.udf3.IF;
+import com.heitaox.sql.executor.core.function.udf3.REPLACE;
+import com.heitaox.sql.executor.core.function.udf3.SUBSTRING;
 import com.heitaox.sql.executor.core.util.DataFrameUntil;
 import com.heitaox.sql.executor.source.DataSource;
 import com.heitaox.sql.executor.source.FileDataSource;
@@ -76,6 +75,10 @@ public class SQLExecutor {
         funcMap.put("lower", LOWER.class);
         funcMap.put("left", LEFT.class);
         funcMap.put("right", RIGHT.class);
+        funcMap.put("trim", TRIM.class);
+        funcMap.put("replace", REPLACE.class);
+        funcMap.put("substring", SUBSTRING.class);
+        funcMap.put("reverse", REVERSE.class);
     }
 
     private SQLExecutor() {
