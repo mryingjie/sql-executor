@@ -14,7 +14,11 @@ import com.heitaox.sql.executor.core.function.udaf.AVG;
 import com.heitaox.sql.executor.core.function.udaf.COUNT;
 import com.heitaox.sql.executor.core.function.udaf.MAX;
 import com.heitaox.sql.executor.core.function.udaf.SUM;
-import com.heitaox.sql.executor.core.function.udf.*;
+import com.heitaox.sql.executor.core.function.udf.CURRENT_DATE;
+import com.heitaox.sql.executor.core.function.udf.CURRENT_TIME;
+import com.heitaox.sql.executor.core.function.udf.NOW;
+import com.heitaox.sql.executor.core.function.udf.UNIX_TIMESTAMP;
+import com.heitaox.sql.executor.core.function.udf1.*;
 import com.heitaox.sql.executor.core.function.udf2.IFNULL;
 import com.heitaox.sql.executor.core.function.udf2.LEFT;
 import com.heitaox.sql.executor.core.function.udf2.RIGHT;
@@ -79,6 +83,17 @@ public class SQLExecutor {
         funcMap.put("replace", REPLACE.class);
         funcMap.put("substring", SUBSTRING.class);
         funcMap.put("reverse", REVERSE.class);
+        funcMap.put("now", NOW.class);
+        funcMap.put("unix_timestamp", UNIX_TIMESTAMP.class);
+        funcMap.put("current_date", CURRENT_DATE.class);
+        funcMap.put("current_time", CURRENT_TIME.class);
+        funcMap.put("dayofmonth", DAYOFMONTH.class);
+        funcMap.put("dayofweek", DAYOFWEEK.class);
+        funcMap.put("dayofyear", DAYOFYEAR.class);
+        funcMap.put("month", MONTH.class);
+        funcMap.put("week", WEEK.class);
+        funcMap.put("year", YEAR.class);
+        funcMap.put("datetimetodate", DATETIMETODATE.class);
     }
 
     private SQLExecutor() {
@@ -213,6 +228,7 @@ public class SQLExecutor {
                 columnToIndex = DataFrameUntil.computeFiledToIndex(df);
                 df = analysisAndExecuteSimpleSQL(df, columnToIndex, sqlSelectQueryBlock, tableAlias, false);
             } else {
+                df = new DataFrame(sqlSelectQueryBlock.getSelectList());
                 throw new NotSupportException("unknow dataSource Type of " + dataSource.getClass().getTypeName());
             }
 
@@ -238,6 +254,9 @@ public class SQLExecutor {
             DataFrameUntil.setColumnTableAlias(df, tableSource.getAlias());
             columnToIndex = DataFrameUntil.computeFiledToIndex(df);
             df = analysisAndExecuteSimpleSQL(df, columnToIndex, sqlSelectQueryBlock, tableSource.getAlias(), false);
+        }else if(table == null){
+
+           throw new NotSupportException("From clause cannot be empty");
         }
         return df == null ? new DataFrame() : df;
     }

@@ -1,20 +1,14 @@
 package com.heitaox.sql.executor.core.function.udf;
 
 /**
- * @param <I> input parameter type
- * @param <U> output parameter type
- * the abstract class of the UDF function,
- * all udf functions must inherit this class and
- * implement all the abstract methods in the class.
+ * created by Yingjie Zheng at 2019-08-30
  */
-public abstract class UDF<I,U> {
+public abstract class UDF<U> {
 
     public static final String TRANS_METHOD = "trans";
 
     /**
-     * Convert the input parameters to the final result
-     * @param in input parameter
      * @return final result
      */
-    public abstract U trans(I in);
+    public abstract U trans();
 }

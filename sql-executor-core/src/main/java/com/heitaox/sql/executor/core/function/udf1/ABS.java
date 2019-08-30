@@ -1,9 +1,9 @@
-package com.heitaox.sql.executor.core.function.udf;
+package com.heitaox.sql.executor.core.function.udf1;
 
 /**
  *
  */
-public class ABS extends UDF<Number, Number> {
+public class ABS extends UDF1<Number, Number> {
     @Override
     public Number trans(Number in) {
         if (in == null)

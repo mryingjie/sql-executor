@@ -1,7 +1,7 @@
-package com.heitaox.sql.executor.core.function.udf;
+package com.heitaox.sql.executor.core.function.udf1;
 
 
-public class REVERSE extends UDF<String,String> {
+public class REVERSE extends UDF1<String,String> {
 
 
     @Override

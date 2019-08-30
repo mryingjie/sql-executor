@@ -11,7 +11,7 @@ import com.heitaox.sql.executor.core.exception.ErrorSQLException;
 import com.heitaox.sql.executor.core.exception.NotSupportException;
 import com.heitaox.sql.executor.core.function.udaf.COUNT;
 import com.heitaox.sql.executor.core.function.udaf.UDAF;
-import com.heitaox.sql.executor.core.function.udf.UDF;
+import com.heitaox.sql.executor.core.function.udf1.UDF1;
 import com.heitaox.sql.executor.core.function.udf2.UDF2;
 import com.heitaox.sql.executor.core.function.udf3.UDF3;
 import com.heitaox.sql.executor.core.util.ClassConvertUtil;
@@ -117,8 +117,27 @@ public class GroupByExecutor extends BaseExecutor {
                     throw new NotSupportException("can not find the method with name[" + ((SQLMethodInvokeExpr) expr).getMethodName() + "]");
                 }
                 List<SQLExpr> parameters = ((SQLMethodInvokeExpr) expr).getParameters();
+                if (parameters == null || parameters.size() == 0) {
+                    // udf
+                    //udf1
+                    Class udfClass = aClass;
+                    try {
+                        Object o = udfClass.newInstance();
+                        Type type = udfClass.getGenericSuperclass();
+                        //转换为泛型
+                        ParameterizedType pt = (ParameterizedType) type;
+                        // 获取参数化类型中，实际类型的定义
+                        Type[] ts = pt.getActualTypeArguments();
+                        Class outPutClass = (Class) ts[0];
+                        Method transMethod = udfClass.getMethod(UDF1.TRANS_METHOD);
+                        Object invokeRes = transMethod.invoke(o);
+                        return ClassConvertUtil.convertClass(outPutClass, invokeRes);
+                    } catch (InstantiationException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                        log.error("function:[{}] execute error", udfClass.getName(), e);
+                    }
+                }
                 if (parameters.size() == 1) {
-                    //udf
+                    //udf1
                     Class udfClass = aClass;
                     SQLExpr sqlExpr = parameters.get(0);
                     Object param = executeFunc(sqlExpr, values);
@@ -131,11 +150,11 @@ public class GroupByExecutor extends BaseExecutor {
                         Type[] ts = pt.getActualTypeArguments();
                         Class inputClass = (Class) ts[0];
                         Class outPutClass = (Class) ts[1];
-                        Method transMethod = udfClass.getMethod(UDF.TRANS_METHOD, inputClass);
+                        Method transMethod = udfClass.getMethod(UDF1.TRANS_METHOD, inputClass);
                         Object invokeRes = transMethod.invoke(o, ClassConvertUtil.convertClass(inputClass, param));
                         return ClassConvertUtil.convertClass(outPutClass, invokeRes);
                     } catch (InstantiationException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                        e.printStackTrace();
+                        log.error("function:[{}] execute error", udfClass.getName(), e);
                     }
 
                 }
@@ -165,7 +184,7 @@ public class GroupByExecutor extends BaseExecutor {
 
                         return ClassConvertUtil.convertClass(outPutClass, res);
                     } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                        e.printStackTrace();
+                        log.error("function:[{}] execute error", udf2Class.getName(), e);
                     }
                 }
                 if (parameters.size() == 3) {
@@ -196,7 +215,7 @@ public class GroupByExecutor extends BaseExecutor {
 
                         return ClassConvertUtil.convertClass(outPutClass, res);
                     } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                        e.printStackTrace();
+                        log.error("function:[{}] execute error", udf2Class.getName(), e);
                     }
                 }
 
@@ -221,8 +240,8 @@ public class GroupByExecutor extends BaseExecutor {
                         objects.clear();
                     }
                 }
+                Class udafClass = aClass;
                 try {
-                    Class udafClass = aClass;
                     Object o = udafClass.newInstance();
                     Type type = udafClass.getGenericSuperclass();
                     //转换为泛型
@@ -240,7 +259,7 @@ public class GroupByExecutor extends BaseExecutor {
                     }
                     return computeResultMethod.invoke(o, res);
                 } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                    e.printStackTrace();
+                    log.error("function:[{}] execute error", udafClass.getName(), e);
                 }
             } else if (expr instanceof SQLIdentifierExpr) {
                 List value = (List) values.get(0);
@@ -289,7 +308,7 @@ public class GroupByExecutor extends BaseExecutor {
                     for (SQLCaseExpr.Item item : items) {
                         SQLExpr conditionExpr = item.getConditionExpr();
                         List<PredicateEntity<Object>> predicateEntities = SQLExprAnalyzer.analysisPredicate(conditionExpr, null);
-                        if(DataFrameUntil.exectuePredicaeEntity(predicateEntities, columnToIndex, (List<Object>) values.get(0), tableAlias)){
+                        if (DataFrameUntil.exectuePredicaeEntity(predicateEntities, columnToIndex, (List<Object>) values.get(0), tableAlias)) {
                             return executeFunc(item.getValueExpr(), values);
                         }
                     }
@@ -307,7 +326,7 @@ public class GroupByExecutor extends BaseExecutor {
          * 这个方法实际是在准备执行函数的所需的数据  真正的执行逻辑在executeFunc方法
          *
          * @param keysToDataList groupBy聚合后的数据
-         * @param haveGroup 是否有group
+         * @param haveGroup      是否有group
          * @return DataFrame
          */
         public DataFrame execute(Map<List<Object>, List<Object>> keysToDataList, boolean haveGroup) {
