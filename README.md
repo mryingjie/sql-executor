@@ -198,7 +198,7 @@ public class APP {
 ### 1、自定义数据源
 　注意将数据转换为Dataframe后一定要调用DataFrameUntil.setColumnTableAlias(df, tableAlias)，为Datafram的每一列设置别名，这个别名如果sql中没有就是表名，如果sql中就是对应的表别名。  
 　关系型数据库   
-　　see: [RDBMSDataSource](https://github.com/mryingjie/sql-executor/blob/master/src/main/java/com/heitao/sql/executor/source/rdbms/StandardSqlDataSource.java)
+　　see: [RDBMSDataSource](https://github.com/mryingjie/sql-executor/blob/master/sql-executor-core/src/main/java/com/heitaox/sql/executor/source/rdbms/StandardSqlDataSource.java)
 
 ```java
    // 一般情况下只需要使用提供的com.heitao.sql.executor.source.rdbms.StandardSqlDataSource即可
@@ -218,7 +218,7 @@ public class APP {
     }
 ```
 　非关系型数据库  
-　　see: [NoSQLDataSource](https://github.com/mryingjie/sql-executor/blob/master/src/main/java/com/heitao/sql/executor/source/nosql/MongoDataSource.java)
+　　see: [NoSQLDataSource](https://github.com/mryingjie/sql-executor/blob/master/sql-executor-mongo/src/main/java/com/heitaox/sql/executor/source/nosql/MongoDataSource.java)
 ```java
     // 实现com.heitao.sql.executor.source.NoSQLDataSource接口 并在此定义需要的连接信息
     public class xxxx implements NoSQLDataSource {
@@ -251,7 +251,7 @@ public class APP {
         }
 ```
 　文件类型的数据源  
-　　see: [FileDataSource](https://github.com/mryingjie/sql-executor/blob/master/src/main/java/com/heitao/sql/executor/source/file/CsvDataSource.java)
+　　see: [FileDataSource](https://github.com/mryingjie/sql-executor/blob/master/sql-executor-core/src/main/java/com/heitaox/sql/executor/source/file/ExcelDataSource.java)
 ```java
         // 实现com.heitao.sql.executor.source.FileDataSource 并在此定义需要的文件路径等信息
         // 默认读取的数据都是String类型 因此如果要参与数学计算，需要提供对应的schema来描述字段类型
@@ -292,7 +292,7 @@ public class APP {
 ```  
 ```java
     // 如果要自定义UDF函数 只需继承UDF类泛型为输入和输出的类型，然后实现trans方法并将函数注册到SQLExecutor中即可
-    public class xxx extends UDF<String,String>{
+    public class xxx extends UDF1<String,String>{
     
             @Override
             public String trans(String in) {
@@ -300,7 +300,7 @@ public class APP {
             }
     }
     
-    // 同样的如果要自定义UDAF UDF2 UDF3等函数只需继承对应的类型并实现抽象类的方法然后注册到SQLExecutor中即可
+    // 同样的如果要自定义UDAF UDF1 UDF2 UDF3等函数只需继承对应的类型并实现抽象类的方法然后注册到SQLExecutor中即可
 ```
 
 ### 3、enableCache 
