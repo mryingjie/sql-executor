@@ -210,9 +210,9 @@ public class APP {
         public DataFrame<Object> executeQuery(String sql) {
             return null;
         }
-
+    
         @Override
-        public int executeInsert(String sql) {
+        public int executeUpdate(String sql) throws SQLException {
             return 0;
         }
     }
