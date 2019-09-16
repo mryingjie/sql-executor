@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class CacheDatasource implements DataSource {
 
-    private volatile Map<String, DataFrame<Object>> cacheDataSource = new ConcurrentHashMap<>();
+    private  Map<String, DataFrame<Object>> cacheDataSource = new ConcurrentHashMap<>();
 
     @Override
     public DataFrame queryAll(String tableNme, String tableAlias) {

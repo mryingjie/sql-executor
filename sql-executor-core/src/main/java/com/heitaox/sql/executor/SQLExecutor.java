@@ -61,9 +61,9 @@ public class SQLExecutor {
 
     private static final Map<String, Class> funcMap = new HashMap<>();
 
-    private boolean filterBeforeJoin = false;
+    private volatile boolean filterBeforeJoin = false;
 
-    private boolean filterFirst = false;
+    private volatile boolean filterFirst = false;
 
     static {
         funcMap.put("sum", SUM.class);

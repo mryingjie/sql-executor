@@ -127,9 +127,9 @@ public class DateUtils {
     }
 
     /**
-     * 获取昨天的日期（yyyy-MM-dd）
+     * 获取明天的日期（yyyy-MM-dd）
      * @param date 今天的日期
-     * @return 昨天的日期
+     * @return 明天的日期
      */
     public static String getAfterdayDate(String date) {
         LocalDate parse = LocalDate.parse(date, yyyyMMdd);
@@ -137,6 +137,8 @@ public class DateUtils {
 
         return plus.format(yyyyMMdd);
     }
+
+
 
     /**
      * 格式化日期（yyyy-MM-dd）

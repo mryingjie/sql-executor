@@ -406,7 +406,7 @@ public class GroupByExecutor extends BaseExecutor {
                         columnValue.add(res);
                     }
                     if (dataFrame.length() != 0 && dataFrame.length() != columnValue.size()) {
-                        throw new ErrorSQLException("sql error: udaf function and (udf function or simple column) cannot appear at the same timet ");
+                        throw new ErrorSQLException("sql error: udaf function and (udf function or simple column) cannot appear at the same time ");
                     }
 
                     dataFrame.add(alias, columnValue);
