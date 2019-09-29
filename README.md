@@ -21,7 +21,7 @@
 
 ## 快速开始
 　　1、可以从github上clone到本地，编译，添加到项目的lib中。  
-　　maven方式：已上传至maven中央仓库可以在pom文件中加入maven依赖
+　　2、maven方式：已上传至maven中央仓库可以在pom文件中加入maven依赖
 ```xml
       <!-- 以下依赖按需引入，如果只需要关系型数据库或者excel文件数据源只需引入sql-executor-core即可
             默认引入了mysql的驱动包，如果要使用oracle或其他关系型数据库请引入相应驱动包   -->
