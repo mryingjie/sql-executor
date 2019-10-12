@@ -146,6 +146,8 @@ public class SQLExecutor {
         return true;
     }
 
+
+
     /**
      * 启用join之前过滤的模式可以大大提高join查询的性能  但是要求sql的where语句必须指明字段属于哪个表，
      * 尽量不要使用十分复杂的过滤条件例如带括号的，

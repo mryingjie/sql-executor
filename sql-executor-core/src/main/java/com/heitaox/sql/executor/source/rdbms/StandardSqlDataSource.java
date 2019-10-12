@@ -31,7 +31,7 @@ public class StandardSqlDataSource implements RDBMSDataSource {
         this.dataSource = dataSource;
     }
 
-    public StandardSqlDataSource(RDBMSDataSourceProperties properties) {
+    public StandardSqlDataSource(RDBMSDataSourceProperties properties) throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 
         dataSource.setUrl(properties.getUrl());
@@ -60,12 +60,13 @@ public class StandardSqlDataSource implements RDBMSDataSource {
         dataSource.setMaxPoolPreparedStatementPerConnectionSize(properties.getMaxPoolPreparedStatementPerConnectionSize());
         // 打开PSCache，并且指定每个连接上PSCache的大小，Oracle等支持游标的数据库，打开此开关，会以数量级提升性能，具体查阅PSCache相关资料
         dataSource.setPoolPreparedStatements(properties.isPoolPreparedStatements());
-
+        dataSource.setBreakAfterAcquireFailure(true);
         try {
             dataSource.init();
             this.dataSource = dataSource;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             log.error("dataSource init failed", e);
+            throw e;
         }
 
 
