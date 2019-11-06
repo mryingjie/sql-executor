@@ -652,14 +652,13 @@ public class ExcelUtil {
         int i = 0;
         try {
             randomAccessFile = new RandomAccessFile(filePath, "rw");
-
             for (List<Object> line : lines) {
                 long fileLength = randomAccessFile.length();
                 randomAccessFile.seek(fileLength);
+                randomAccessFile.write(ExcelContant.WRAP.getBytes("GBK"));
                 for (Object o : line) {
                     randomAccessFile.write((o.toString() + ExcelContant.SEPARATOR).getBytes("GBK"));
                 }
-                randomAccessFile.write(ExcelContant.WRAP.getBytes("GBK"));
                 i++;
             }
         } finally {

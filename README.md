@@ -371,21 +371,49 @@ public class App {
     }
 }
 ```
+
+### 将DataFrame转换为insert语句
+```java
+    public static void main(String[] args) throws IOException, SQLException {
+            
+            //准备两个文件数据
+            DataSource excle = new ExcelDataSource("/Users/Documents/docs/test_table1.xlsx", new HashMap<String, Class>());
+            DataSource csv = new ExcelDataSource("/Users/Documents/docs/test_table2.csv", new HashMap<String, Class>());
+            
+            //创建sqlExecutor执行引擎
+            SQLExecutor sqlExecutor = SQLExecutor.sqlExecutorBuilder
+                    .putDataSource("test_table1", excle)
+                    .putDataSource("test_table2", csv)
+                    .enableCache()
+                    .build();
+            //从table1中查询数据获得DataFrame
+            DataFrame dataFrame = sqlExecutor.executeQuery("select 应用名,现在的部署IP,现在的部署端口 from test_table1");
+            
+            //将dataFrame转化为插入语句
+            String sql = DataFrameUntil.toInsertSql(dataFrame, "test_table2");
+            
+            //执行sql  可以在csv文件上查看插入结果
+            sqlExecutor.executeInsert(sql);
+        }
+```
+
 更多使用的demo请参考：[CoreTest](https://github.com/mryingjie/sql-executor/blob/master/src/test/CoreTest.java)
 
-### 需要注意的点
+
+
+## 需要注意的点
 1、sql中的表以及字段尽量都提供别名，否则在关联查询以及子查询中可能出现找不到对应的表的情况。  
 2、如果查询的字段有别名having、order by、limit子句中尽量都使用其别名，否则可能出现找不到对应字段的问题。  
 3、当使用默认的ElasticsearchDataSource时，如果表字段的类型是String，注意分词，where中的筛选结果因分词的不同可能会出现不同的结果。这里是按照条件中的值
 去es中匹配对应的表中字段分词后的结果，匹配到就查询出来。而不是单纯的相等不相等的关系，使用的时候请一定测试结果是否是预期的效果。
 例如：name :'张三'  在es中'张三'可能会被分词器分为'张'和'三' 。如果where name = '张' 或 where name = '三' 都会匹配到，但是where name = '张三' 匹配不到。如果在es中'张三'被分词器分为'张'、'三'、'张三'。那么where name = '张三' 就可以匹配到。而且如果执行的是更新删除操作，会有延迟，如果刚执行完更新删除操作就查询可能会查询不到。
-### 以后的更新展望
+## 以后的更新展望
 1、目前不支持从HDFS上读取文件，未来会支持。  
 2、目前只支持UDF函数和UDAF函数 在以后的更新中会慢慢增加对UDTF函数以及window函数的支持。
 3、目前默认支持的函数依然较少，以后的更新中将增加更多的函数实现。
 
 
-### 作者的一些话
+## 作者的一些话
 这个工具是本人第一个也是第一次完整的开源一个项目。第一版从开始到发布历时大概一个月左右，完全是在本人工作之余即兴而做，项目中的所有代码均为本人自己手写和查阅相关api资料所得。由于经验不足，以及自己的能力问题可能会有很多需要改进的地方，和潜在的bug。如果哪位大神看到哪里有什么需要改进的地方或bug请联系我，万分感谢！！！  
 联系方式：  
 微信号：wxid_8sbv70n9eak322  

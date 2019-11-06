@@ -78,17 +78,18 @@ public class ExcelDataSource implements FileDataSource {
         String suffix = ExcelUtil.getSuffix(filePath);
         int i = 0;
         if (".xls".equals(suffix)) {
-            i = ExcelUtil.appendValue2003(valueList,filePath,tableName);
+            i = ExcelUtil.appendValue2003(valueList, filePath, tableName);
         } else if (".xlsx".equals(suffix)) {
-            i = ExcelUtil.appendValue2007(valueList,filePath,tableName);
+            i = ExcelUtil.appendValue2007(valueList, filePath, tableName);
         } else {
             String headStr = ExcelUtil.readExcelHead(filePath);
-            String[] split = headStr.split(",");
+
+            String[] split = headStr.contains(",") ? headStr.split(",") : headStr.split("\t");
             List<List<Object>> lines = new ArrayList<>();
             for (Map<String, Object> lineMap : valueList) {
                 List<Object> line = new ArrayList<>();
                 for (Object s : split) {
-                    line.add(lineMap.get(s));
+                    line.add(lineMap.getOrDefault(s,""));
                 }
                 lines.add(line);
             }
@@ -104,12 +105,12 @@ public class ExcelDataSource implements FileDataSource {
         String suffix = ExcelUtil.getSuffix(filePath);
         int i = 0;
         if (".xls".equals(suffix)) {
-            i = ExcelUtil.updateValue2003(updateItems,predicateEntities,filePath,tableName);
+            i = ExcelUtil.updateValue2003(updateItems, predicateEntities, filePath, tableName);
         } else if (".xlsx".equals(suffix)) {
-            i = ExcelUtil.updateValue2007(updateItems,predicateEntities,filePath,tableName);
+            i = ExcelUtil.updateValue2007(updateItems, predicateEntities, filePath, tableName);
         } else {
 
-            i = ExcelUtil.updateValueCsv(updateItems,predicateEntities,filePath,tableName);
+            i = ExcelUtil.updateValueCsv(updateItems, predicateEntities, filePath, tableName);
         }
         return i;
     }
@@ -119,12 +120,12 @@ public class ExcelDataSource implements FileDataSource {
         String suffix = ExcelUtil.getSuffix(filePath);
         int i = 0;
         if (".xls".equals(suffix)) {
-            i = ExcelUtil.deleteValue2003(predicateEntities,filePath,tableName);
+            i = ExcelUtil.deleteValue2003(predicateEntities, filePath, tableName);
         } else if (".xlsx".equals(suffix)) {
-            i = ExcelUtil.deleteValue2007(predicateEntities,filePath,tableName);
+            i = ExcelUtil.deleteValue2007(predicateEntities, filePath, tableName);
         } else {
 
-            i = ExcelUtil.deleteValueCsv(predicateEntities,filePath,tableName);
+            i = ExcelUtil.deleteValueCsv(predicateEntities, filePath, tableName);
         }
         return i;
     }

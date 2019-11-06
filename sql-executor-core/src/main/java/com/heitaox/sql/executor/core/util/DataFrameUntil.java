@@ -143,24 +143,6 @@ public class DataFrameUntil {
         return dataFrame;
     }
 
-    public static void main(String[] args) {
-        DataFrame<Object> dataFrame = new DataFrame<>("name","age","sex");
-        dataFrame.append(Arrays.asList("张三",23,1));
-        dataFrame.append(Arrays.asList("李四",23,0));
-        dataFrame.append(Arrays.asList("王五",22,1));
-        dataFrame.append(Arrays.asList("张三",23,1));
-        dataFrame.append(Arrays.asList("张三",23,0));
-        DataFrame<Object> df2 = new DataFrame<>("name","age","sex");
-        df2.append(Arrays.asList("张三",23,1));
-        df2.append(Arrays.asList("李四",23,0));
-        df2.append(Arrays.asList("王五",22,1));
-        df2.append(Arrays.asList("张三",23,1));
-        df2.append(Arrays.asList("赵六",24,0));
-        System.out.println(dataFrame);
-        DataFrame<String> compare = dataFrame.compare(dataFrame, df2);
-        System.out.println(compare);
-    }
-
 
     public static class Sorting {
         public static <V> DataFrame<V> sort(
@@ -540,5 +522,31 @@ public class DataFrameUntil {
             e.printStackTrace();
         }
         return (Boolean) eval;
+    }
+
+
+    public static String toInsertSql(DataFrame df,String tableName){
+        if(df == null || df.length() ==0){
+            throw new NullPointerException("dataframe is can not be empty");
+        }
+        StringBuilder sb = new StringBuilder("INSERT INTO ");
+        sb.append(tableName).append(" (");
+        Set columns = df.columns();
+        columns.forEach(field -> {
+            sb.append(field).append(",");
+        });
+        sb.deleteCharAt(sb.lastIndexOf(","));
+        sb.append(") ").append("VALUES");
+        for (Object o : df) {
+            List column = (List)o;
+            sb.append(" (");
+            for (Object value : column) {
+                sb.append("'").append(value).append("'").append(",");
+            }
+            sb.deleteCharAt(sb.lastIndexOf(","));
+            sb.append(")").append(",");
+        }
+        sb.deleteCharAt(sb.lastIndexOf(","));
+        return sb.toString();
     }
 }
