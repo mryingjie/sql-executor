@@ -399,6 +399,8 @@ public class App {
 
 更多使用的demo请参考：[CoreTest](https://github.com/mryingjie/sql-executor/blob/master/src/test/CoreTest.java)
 
+## 支持函数
+abs, avg, case, concat, count, current_date, current_time, datetimetodate, dayofmonth, dayofweek, dayofyear, if, ifnull, left, length, lower, max, month, now, replace, reverse, right, substring, sum, trim, unix_timestamp, upper, week, year
 
 
 ## 需要注意的点

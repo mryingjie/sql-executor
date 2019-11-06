@@ -8,7 +8,7 @@ import joinery.DataFrame;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * created by Yingjie Zheng at 2019-11-06 10:28
@@ -17,24 +17,40 @@ public class TestClient {
 
     public static void main(String[] args) throws IOException, SQLException {
 
-        //准备两个文件数据
-        DataSource excle = new ExcelDataSource("/Users/Documents/docs/test_table1.xlsx", new HashMap<String, Class>());
-        DataSource csv = new ExcelDataSource("/Users/Documents/docs/test_table2.csv", new HashMap<String, Class>());
-
-        //创建sqlExecutor执行引擎
+        DataSource excle = new ExcelDataSource("/Users/lsjr3/Documents/docs/迁移/fund_p2p.xlsx", new HashMap<String, Class>());
+        ExcelDataSource csv = new ExcelDataSource("/Users/lsjr3/Documents/docs/迁移/lejr_common.csv", new HashMap<String, Class>());
         SQLExecutor sqlExecutor = SQLExecutor.sqlExecutorBuilder
-                .putDataSource("test_table1", excle)
-                .putDataSource("test_table2", csv)
+                .putDataSource("fund_p2p", excle)
+                .putDataSource("lejr_common", csv)
                 .enableCache()
                 .build();
-        //从table1中查询数据获得DataFrame
-        DataFrame dataFrame = sqlExecutor.executeQuery("select 应用名,现在的部署IP,现在的部署端口 from test_table1");
+        DataFrame dataFrame = sqlExecutor.executeQuery("select 应用名,现在的部署IP,现在的部署端口 from fund_p2p");
+        sqlExecutor.cache("tmp", dataFrame);
+        StringBuilder sb = new StringBuilder();
+        for (Object o : dataFrame) {
+            List list = (List)o;
+            for (int i = 0; i < list.size(); i++) {
+                sb.append(list.get(i));
+                if(i == list.size()-1){
+                    break;
+                }
+                sb.append(",");
+            }
+            sb.append("\n");
+        }
 
-        //将dataFrame转化为插入语句
-        String sql = DataFrameUntil.toInsertSql(dataFrame, "test_table2");
-
-        //执行sql  可以在csv文件上查看插入结果
+        String sql = DataFrameUntil.toInsertSql(dataFrame, "lejr_common");
+        System.out.println(sql);
+        System.out.println(sb.toString());
         sqlExecutor.executeInsert(sql);
+        // System.out.println(dataFrame);
+
+        ArrayList<String> func = new ArrayList<>();
+        for (Map.Entry<String, Class> stringClassEntry : SQLExecutor.funcMap.entrySet()) {
+            func.add(stringClassEntry.getKey());
+        }
+        func.sort(Comparator.naturalOrder());
+        System.out.println(func);
     }
 
 }
