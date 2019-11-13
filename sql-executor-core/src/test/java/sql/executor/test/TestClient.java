@@ -24,7 +24,9 @@ public class TestClient {
                 .putDataSource("lejr_common", csv)
                 .enableCache()
                 .build();
-        DataFrame dataFrame = sqlExecutor.executeQuery("select 应用名,现在的部署IP,现在的部署端口 from fund_p2p");
+        // DataFrame dataFrame = sqlExecutor.executeQuery("select 应用名,现在的部署IP,现在的部署端口 from lejr_common");
+        DataFrame dataFrame = sqlExecutor.executeQuery("select 应用名,现在的部署IP,'8080' from lejr_common where 部署方式= 'nginx'");
+
         sqlExecutor.cache("tmp", dataFrame);
         StringBuilder sb = new StringBuilder();
         for (Object o : dataFrame) {
@@ -39,18 +41,9 @@ public class TestClient {
             sb.append("\n");
         }
 
-        String sql = DataFrameUntil.toInsertSql(dataFrame, "lejr_common");
-        System.out.println(sql);
         System.out.println(sb.toString());
-        sqlExecutor.executeInsert(sql);
-        // System.out.println(dataFrame);
 
-        ArrayList<String> func = new ArrayList<>();
-        for (Map.Entry<String, Class> stringClassEntry : SQLExecutor.funcMap.entrySet()) {
-            func.add(stringClassEntry.getKey());
-        }
-        func.sort(Comparator.naturalOrder());
-        System.out.println(func);
+
     }
 
 }

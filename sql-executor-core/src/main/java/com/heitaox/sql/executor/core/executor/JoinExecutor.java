@@ -19,10 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 @Slf4j
 @SuppressWarnings("all")
@@ -30,7 +27,7 @@ public class JoinExecutor extends BaseExecutor {
 
     public static final String JOIN_TABLE_ALIAS = "joinTable";
 
-    private ExecutorService executorService;
+    private static ExecutorService executorService;
 
 
     private SQLJoinTableSource joinTables;
@@ -85,7 +82,15 @@ public class JoinExecutor extends BaseExecutor {
         if (!(dataSources.get(leftTable.getTName()) instanceof NullDataSource)) {
             // 两个表都需要加载外部数据 使用两个线程同时加载
             if (executorService == null) {
-                executorService = Executors.newFixedThreadPool(2);
+                executorService = new ThreadPoolExecutor(
+                        2, //核心线程数2
+                        Runtime.getRuntime().availableProcessors() * 2, //最大线程=cpu核数*2
+                        60, //非核心线程600秒内无任务被销毁
+                        //任务缓存队列最多缓存cpu核数*2个任务
+                        TimeUnit.SECONDS,new LinkedBlockingQueue(Runtime.getRuntime().availableProcessors() * 2),
+                        // 当线程池的任务缓存队列已满并且线程池中的线程数目达到最大值时由调用线程处理该任务
+                        new ThreadPoolExecutor.CallerRunsPolicy()
+                );
             }
             //判断是否启用join前过滤
             Future<DataFrame> leftDfFuture;
@@ -117,7 +122,6 @@ public class JoinExecutor extends BaseExecutor {
             try {
                 leftDf = leftDfFuture.get();
                 rightDf = rightDfFuture.get();
-                executorService.shutdown();
                 cache.put(leftTable.getTName(), leftDf);
                 cache.put(rightTable.getTName(), rightDf);
             } catch (InterruptedException | ExecutionException e) {

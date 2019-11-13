@@ -213,7 +213,6 @@ public class SQLExecutor {
                 df = ((RDBMSDataSource) dataSource).executeQuery(sqlSelectQueryBlock.toString());
             } else if (dataSource instanceof NoSQLDataSource) {
                 if (filterFirst()) {
-                    log.info("filter first");
                     SQLExpr where = sqlSelectQueryBlock.getWhere();
                     List<PredicateEntity<Object>> predicateEntities = SQLExprAnalyzer.analysisPredicate(where, this);
                     df = dataSource.queryByPredicate(tableName, tableAlias, predicateEntities);
@@ -230,7 +229,6 @@ public class SQLExecutor {
                 columnToIndex = DataFrameUntil.computeFiledToIndex(df);
                 df = analysisAndExecuteSimpleSQL(df, columnToIndex, sqlSelectQueryBlock, tableAlias, false);
             } else {
-                df = new DataFrame(sqlSelectQueryBlock.getSelectList());
                 throw new NotSupportException("unknow dataSource Type of " + dataSource.getClass().getTypeName());
             }
 
