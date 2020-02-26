@@ -17,16 +17,16 @@ public class TestClient {
 
     public static void main(String[] args) throws IOException, SQLException {
 
-        DataSource excle = new ExcelDataSource("/Users/lsjr3/Documents/docs/迁移/fund_p2p.xlsx", new HashMap<String, Class>());
+        DataSource excle = new ExcelDataSource("/Users/lsjr3/Documents/docs/迁移/ip.xlsx", new HashMap<String, Class>());
         ExcelDataSource csv = new ExcelDataSource("/Users/lsjr3/Documents/docs/迁移/lejr_common.csv", new HashMap<String, Class>());
         SQLExecutor sqlExecutor = SQLExecutor.sqlExecutorBuilder
-                .putDataSource("fund_p2p", excle)
+                .putDataSource("ip", excle)
                 .putDataSource("lejr_common", csv)
                 .enableCache()
                 .build();
         // DataFrame dataFrame = sqlExecutor.executeQuery("select 应用名,现在的部署IP,现在的部署端口 from lejr_common");
-        DataFrame dataFrame = sqlExecutor.executeQuery("select 应用名,现在的部署IP,'8080' from lejr_common where 部署方式= 'nginx'");
-
+        // DataFrame dataFrame = sqlExecutor.executeQuery("select 应用名,现在的部署IP,'8080' from lejr_common where 部署方式= 'nginx'");
+        DataFrame dataFrame = sqlExecutor.executeQuery("select ip from ip");
         sqlExecutor.cache("tmp", dataFrame);
         StringBuilder sb = new StringBuilder();
         for (Object o : dataFrame) {

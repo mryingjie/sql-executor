@@ -441,6 +441,15 @@ public class DataFrameUntil {
             String field = entity.getField();
             Object sqlValue = entity.getValue();
             Integer columnIndex = columnToIndex.get(field.toLowerCase()) == null?columnToIndex.get((tableAlias+"."+field).toLowerCase()):columnToIndex.get(field.toLowerCase());
+            if(columnIndex == null){
+                columnIndex = columnToIndex.get(field.toUpperCase()) == null?columnToIndex.get((tableAlias+"."+field).toLowerCase()):columnToIndex.get(field.toUpperCase());
+            }
+            if(columnIndex == null){
+                columnIndex = columnToIndex.get(field) == null?columnToIndex.get((tableAlias+"."+field).toLowerCase()):columnToIndex.get(field);
+            }
+            if(columnIndex == null){
+                throw new RuntimeException("can not find the field of ["+ field+"]");
+            }
             Object dataValue = values.get(columnIndex);
             if(dataValue == null){
                 dataValue = "";
