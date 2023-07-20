@@ -8,6 +8,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.heitaox.sql.executor.core.analysis.SQLExprAnalyzer;
 import com.heitaox.sql.executor.core.entity.PredicateEntity;
+import com.heitaox.sql.executor.core.exception.ErrorSQLException;
 import com.heitaox.sql.executor.core.exception.NotSupportException;
 import com.heitaox.sql.executor.core.executor.*;
 import com.heitaox.sql.executor.core.function.udaf.AVG;
@@ -39,10 +40,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Objects.requireNonNull;
@@ -201,6 +199,9 @@ public class SQLExecutor {
             //普通单表查询
             String tableName = ((SQLExprTableSource) table).getName().getSimpleName();//表名
             DataSource dataSource = dataSources.get(tableName);
+            if(Objects.isNull(dataSource)){
+                throw new ErrorSQLException("not exists tableName:" + tableName);
+            }
             if (dataSource instanceof FileDataSource) {
                 //数据源是文件类型
                 df = dataSource.queryAll(tableName, tableAlias);
@@ -230,7 +231,6 @@ public class SQLExecutor {
                 columnToIndex = DataFrameUntil.computeFiledToIndex(df);
                 df = analysisAndExecuteSimpleSQL(df, columnToIndex, sqlSelectQueryBlock, tableAlias, false);
             } else {
-                df = new DataFrame(sqlSelectQueryBlock.getSelectList());
                 throw new NotSupportException("unknow dataSource Type of " + dataSource.getClass().getTypeName());
             }
 
