@@ -49,7 +49,7 @@ public class GroupByExecutor extends BaseExecutor {
 
         Object[] groupByItems = SQLExprAnalyzer.analysisGroupBy(groupBy, tableAlias);
         if (groupByItems.length != 0) {
-            keysToDataList = excuteGroupBy(df, groupByItems);
+            keysToDataList = executeGroupBy(df, groupByItems);
             // 三、执行函数 获取查询的列名
             df = new FunctionExecutor().execute(keysToDataList, true);
 
@@ -69,7 +69,7 @@ public class GroupByExecutor extends BaseExecutor {
         return df;
     }
 
-    private Map<List<Object>, List<Object>> excuteGroupBy(DataFrame df, Object[] groupByItems) {
+    private Map<List<Object>, List<Object>> executeGroupBy(DataFrame df, Object[] groupByItems) {
         final DataFrame groupDf = df.groupBy(groupByItems);
         Grouping groups = groupDf.groups();
         Map<List<Object>, List<Object>> keysToDataGroup = new HashMap<>(groupByItems.length);
@@ -341,6 +341,9 @@ public class GroupByExecutor extends BaseExecutor {
                 if (expr instanceof SQLIdentifierExpr) {
                     //普通列名 没有表别名
                     Integer index = columnToIndex.get((tableAlias + "." + expr.toString()).toLowerCase());
+                    if(Objects.isNull(index)){
+                        throw new ErrorSQLException(String.format("列[%s]不存在，请检查sql是否有误！",expr.toString()));
+                    }
                     if (haveGroup) {
                         for (List<Object> values : groupValues) {
                             List value = (List) values.get(0);

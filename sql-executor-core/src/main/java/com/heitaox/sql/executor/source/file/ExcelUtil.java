@@ -1,8 +1,10 @@
 package com.heitaox.sql.executor.source.file;
 
+import com.heitaox.sql.executor.core.entity.ExcelData;
 import com.heitaox.sql.executor.core.entity.PredicateEntity;
 import com.heitaox.sql.executor.core.exception.NotSupportException;
 import com.heitaox.sql.executor.core.util.DataFrameUntil;
+import com.heitaox.sql.executor.core.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
@@ -121,7 +123,7 @@ public class ExcelUtil {
      * @return List
      * @throws IOException IOException
      */
-    public static List<Map<String, String>> readExcel(String filePath) throws IOException {
+    public static List<ExcelData> readExcel(String filePath) throws IOException {
         File file = new File(filePath);
         if (!file.exists()) {
             throw new FileNotFoundException("file [" + filePath + "] not fond");
@@ -129,16 +131,16 @@ public class ExcelUtil {
         String suffix = getSuffix(filePath);
 
         // 返回值列
-        List<Map<String, String>> reaultList = new ArrayList<Map<String, String>>();
+        List<ExcelData> excelData = new ArrayList<>();
         if (".xls".equals(suffix)) {
-            reaultList = readExcel2003(filePath);
+            excelData = readExcel2003(filePath);
         } else if (".xlsx".equals(suffix)) {
-            reaultList = readExcel2007(filePath);
+            excelData = readExcel2007(filePath);
         } else {
-            reaultList = readCsv(filePath);
+            excelData = readCsv(filePath);
         }
 
-        return reaultList;
+        return excelData;
     }
 
     public static String getSuffix(String filePath) {
@@ -159,9 +161,9 @@ public class ExcelUtil {
     /**
      * 读取97-2003格式(即xls格式)
      */
-    private static List<Map<String, String>> readExcel2003(String filePath) throws IOException {
+    private static List<ExcelData> readExcel2003(String filePath) throws IOException {
         // 返回结果集
-        List<Map<String, String>> resurtListMap = new ArrayList<Map<String, String>>();
+        List<ExcelData> resultListMap = new ArrayList<>();
 
         File file = new File(filePath);
         String fileName = file.getName();
@@ -169,13 +171,16 @@ public class ExcelUtil {
             HSSFWorkbook wookbook = new HSSFWorkbook(fis); // 创建对Excel工作簿文件的引用
             // 遍历所有sheet
             for (int page = 0; page < wookbook.getNumberOfSheets(); page++) {
-                Map<String, String> sheetMap = new HashMap<>();
-
+                // 只取第一个sheet
+                if(page > 0){
+                    break;
+                }
+                ExcelData excelData = new ExcelData();
                 HSSFSheet sheet = wookbook.getSheetAt(page); // 在Excel文档中，第page张工作表的缺省索引是0
                 int rows = sheet.getPhysicalNumberOfRows(); // 获取到Excel文件中的所有行数
                 String sheetName = sheet.getSheetName();// sheet名称，用于校验模板是否正确
-                StringBuilder sb = new StringBuilder();
                 int cells = 0;// 当前sheet的行数
+                List<List<String>> rowsValue = new ArrayList<>();
                 // 遍历sheet中所有的行
                 HSSFRow firstRow = sheet.getRow(page);
                 if (firstRow != null) {
@@ -185,8 +190,8 @@ public class ExcelUtil {
                         // 读取左上端单元格
                         HSSFRow row = sheet.getRow(i);
                         // 行不为空
+                        List<String> rowValue = new ArrayList<>();
                         if (row != null) {
-                            boolean isValidRow = false;
                             // 遍历列
                             for (int j = 0; j < cells; j++) {
                                 // 获取到列的值
@@ -195,23 +200,20 @@ public class ExcelUtil {
                                 if (cellValue == null) {
                                     cellValue = "";
                                 }
-                                sb.append(cellValue).append(ExcelContant.SEPARATOR);
-                                if (!isValidRow && cellValue.trim().length() > 0) {
-                                    isValidRow = true;
-                                }
+                                rowValue.add(cellValue);
                             }
-                            sb.append(ExcelContant.WRAP);
+                            rowsValue.add(rowValue);
                         }
                     }
                 }
                 //封装每个sheet入map
-                sheetMap.put(ExcelContant.FILE_NAME, fileName);
-                sheetMap.put(ExcelContant.SHEET_NAME, sheetName);
-                sheetMap.put(ExcelContant.SHEET_CONTENT, sb.toString());
-                resurtListMap.add(sheetMap);
+                excelData.setFileName(fileName);
+                excelData.setSheetName(sheetName);
+                excelData.setRows(rowsValue);
+                resultListMap.add(excelData);
             }
         }
-        return resurtListMap;
+        return resultListMap;
     }
 
     public static int updateValue2003(Map<String, Object> updateItems, List<PredicateEntity<Object>> predicateEntities, String filePath, String tableName) throws IOException {
@@ -446,9 +448,9 @@ public class ExcelUtil {
     /**
      * 读取2007格式(即xlsx)
      */
-    private static List<Map<String, String>> readExcel2007(String filePath) throws IOException {
+    private static List<ExcelData> readExcel2007(String filePath) throws IOException {
         // 返回结果集
-        List<Map<String, String>> resurtListMap = new ArrayList<Map<String, String>>();
+        List<ExcelData> resultList = new ArrayList<>();
 
         File file = new File(filePath);
         String fileName = file.getName();
@@ -457,12 +459,15 @@ public class ExcelUtil {
             XSSFWorkbook wookbook = new XSSFWorkbook(fis); // 创建对Excel工作簿文件的引用
             // 遍历所有sheet
             for (int page = 0; page < wookbook.getNumberOfSheets(); page++) {
-                Map<String, String> sheet_map = new HashMap<>();
-
+                if(page > 0){
+                    // 只取第一个sheet
+                    break;
+                }
                 XSSFSheet sheet = wookbook.getSheetAt(page); // 在Excel文档中，第page张工作表的缺省索引是0
                 int rows = sheet.getPhysicalNumberOfRows(); // 获取到Excel文件中的所有行数
                 String sheetName = sheet.getSheetName();// sheet名称，用于校验模板是否正确
-                StringBuilder sb = new StringBuilder();
+                ExcelData excelData = new ExcelData();
+                List<List<String>> rowsValue = new ArrayList<>(rows);
                 int cells = 0;// 当前sheet的行数
                 // 遍历sheet中所有的行
                 XSSFRow firstRow = sheet.getRow(page);
@@ -474,8 +479,8 @@ public class ExcelUtil {
                         XSSFRow row = sheet.getRow(i);
                         // 行不为空
                         if (row != null) {
-                            boolean isValidRow = false;
                             // 遍历列
+                            List<String> rowValue = new ArrayList<>();
                             for (int j = 0; j < cells; j++) {
                                 // 获取到列的值
                                 XSSFCell cell = row.getCell(j);
@@ -483,24 +488,21 @@ public class ExcelUtil {
                                 if (cellValue == null) {
                                     cellValue = "";
                                 }
-                                sb.append(cellValue).append(ExcelContant.SEPARATOR);
-                                if (!isValidRow && cellValue.trim().length() > 0) {
-                                    isValidRow = true;
-                                }
+                                rowValue.add(cellValue);
                             }
-                            sb.append(ExcelContant.WRAP);
+                            rowsValue.add(rowValue);
                         }
                     }
                 }
                 //封装每个sheet入map
-                sheet_map.put(ExcelContant.FILE_NAME, fileName);
-                sheet_map.put(ExcelContant.SHEET_NAME, sheetName);
-                sheet_map.put(ExcelContant.SHEET_CONTENT, sb.toString());
-                resurtListMap.add(sheet_map);
+                excelData.setFileName(fileName);
+                excelData.setSheetName(sheetName);
+                excelData.setRows(rowsValue);
+                resultList.add(excelData);
             }
 
         }
-        return resurtListMap;
+        return resultList;
     }
 
 
@@ -749,31 +751,34 @@ public class ExcelUtil {
         return line;
     }
 
-    private static List<Map<String, String>> readCsv(String filePath) throws IOException {
+    private static List<ExcelData> readCsv(String filePath) throws IOException {
         // 返回结果集
-        List<Map<String, String>> resurtListMap = new ArrayList<Map<String, String>>();
-
+        List<ExcelData>  resultList = new ArrayList<>();
         File file = new File(filePath);
         String fileName = file.getName();
         FileInputStream fis = null;
         InputStreamReader isr = null;
-        StringBuilder sb = new StringBuilder();
         fis = new FileInputStream(file);
         isr = new InputStreamReader(fis, "GBK");
         try (BufferedReader br = new BufferedReader(isr)) {
-            Map<String, String> sheetMap = new HashMap<>();
+            ExcelData excelData = new ExcelData();
             String line;
-
+            List<List<String>> rows = new ArrayList<>();
             while ((line = br.readLine()) != null) {
-                sb.append(line).append(ExcelContant.WRAP);
+                if(StringUtils.isNotEmpty(line)){
+                    String[] split = line.split(ExcelContant.SEPARATOR);
+                    List<String> rowValue = new ArrayList<>(split.length);
+                    rowValue.addAll(Arrays.asList(split));
+                    rows.add(rowValue);
+                }
             }
-            sheetMap.put(ExcelContant.SHEET_NAME, fileName);
-            sheetMap.put(ExcelContant.FILE_NAME, fileName);
-            sheetMap.put(ExcelContant.SHEET_CONTENT, sb.toString());
-            resurtListMap.add(sheetMap);
+            excelData.setSheetName(fileName);
+            excelData.setFileName(fileName);
+            excelData.setRows(rows);
+            resultList.add(excelData);
         }
 
-        return resurtListMap;
+        return resultList;
     }
 
     public static int deleteValueCsv(List<PredicateEntity<Object>> predicateEntities, String filePath, String tableName) throws IOException {

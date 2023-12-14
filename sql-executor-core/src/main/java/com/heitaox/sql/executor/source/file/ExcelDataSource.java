@@ -1,11 +1,13 @@
 package com.heitaox.sql.executor.source.file;
 
+import com.heitaox.sql.executor.core.entity.ExcelData;
 import com.heitaox.sql.executor.core.entity.PredicateEntity;
 import com.heitaox.sql.executor.core.util.ClassConvertUtil;
 import com.heitaox.sql.executor.source.FileDataSource;
 import joinery.DataFrame;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,33 +31,32 @@ public class ExcelDataSource implements FileDataSource {
     @Override
     public DataFrame<Object> queryAll(String tableNme, String tableAlias) {
 
-        List<Map<String, String>> maps = null;
+        List<ExcelData> excelDataList  = null;
         DataFrame<Object> dataFrame = new DataFrame<>();
         try {
-            maps = ExcelUtil.readExcel(filePath);
-            if (maps == null || maps.size() == 0) {
+            excelDataList = ExcelUtil.readExcel(filePath);
+            if (CollectionUtils.isEmpty(excelDataList)) {
                 return dataFrame;
             }
-            Map<String, String> map = maps.get(0);
-            String data = map.get(ExcelContant.SHEET_CONTENT);
-            String[] split = data.split(ExcelContant.WRAP);
+            ExcelData excelData = excelDataList.get(0);
+            List<List<String>> rows = excelData.getRows();
             Map<Integer, Class> indexToType = new HashMap<>();
-            for (int i = 0; i < split.length; i++) {
-                String[] columns = split[i].split(ExcelContant.SEPARATOR);
+            for (int i = 0; i < rows.size(); i++) {
+                List<String> row = rows.get(i);
                 if (i == 0) {
-                    Object[] columnsWithAlias = Stream.of(columns).map(column -> tableAlias + "." + column).toArray();
+                    Object[] columnsWithAlias = row.stream().map(column -> tableAlias + "." + column).toArray();
                     dataFrame.add(columnsWithAlias);
-                    for (int j = 0; j < columns.length; j++) {
-                        Class aClass = schema.get(columns[j]);
+                    for (int j = 0; j < row.size(); j++) {
+                        Class aClass = schema.get(row.get(i));
                         if (aClass != null) {
                             indexToType.put(j, aClass);
                         }
                     }
                 } else {
-                    ArrayList<Object> objects = new ArrayList<>();
-                    for (int j = 0; j < columns.length; j++) {
+                    List<Object> objects = new ArrayList<>();
+                    for (int j = 0; j < row.size(); j++) {
                         Class aClass = indexToType.get(j);
-                        String column = columns[j];
+                        String column = row.get(j);
                         if (aClass == null) {
                             objects.add(column);
                         } else {
