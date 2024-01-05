@@ -83,19 +83,17 @@ public class ExcelDataSource implements FileDataSource {
         } else if (".xlsx".equals(suffix)) {
             i = ExcelUtil.appendValue2007(valueList,filePath,tableName);
         } else {
-            String headStr = ExcelUtil.readExcelHead(filePath);
-            String[] split = headStr.split(",");
+            List<String> head = ExcelUtil.readExcelHead(filePath);
             List<List<Object>> lines = new ArrayList<>();
             for (Map<String, Object> lineMap : valueList) {
                 List<Object> line = new ArrayList<>();
-                for (Object s : split) {
+                for (String s : head) {
                     line.add(lineMap.get(s));
                 }
                 lines.add(line);
             }
             i = ExcelUtil.appendValueCsv(lines, filePath);
         }
-
 
         return i;
     }

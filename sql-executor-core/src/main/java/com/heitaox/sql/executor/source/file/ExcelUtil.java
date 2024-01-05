@@ -17,11 +17,12 @@ import java.io.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class ExcelUtil {
 
-    public static String readExcelHead(String filePath) throws IOException {
+    public static List<String> readExcelHead(String filePath) throws IOException {
         File file = new File(filePath);
         if (!file.exists()) {
             throw new FileNotFoundException("file [" + filePath + "] not fond");
@@ -29,30 +30,28 @@ public class ExcelUtil {
         String suffix = getSuffix(filePath);
 
         // 返回值列
-        String headStr = "";
+        List<String> head;
         if (".xls".equals(suffix)) {
-            headStr = readExcel2003Head(filePath);
+            head = readExcel2003Head(filePath);
         } else if (".xlsx".equals(suffix)) {
-            headStr = readExcel2007Head(filePath);
+            head = readExcel2007Head(filePath);
         } else {
-            headStr = readCsvHead(filePath);
+            head = readCsvHead(filePath);
         }
 
-        return headStr;
+        return head;
     }
 
 
-    private static String readExcel2007Head(String filePath) throws IOException {
+    private static List<String> readExcel2007Head(String filePath) throws IOException {
         // 返回结果集
         FileInputStream fis = null;
 
-
-        StringBuilder sb = new StringBuilder();
+        List<String> headList = new ArrayList<>();
         try {
             fis = new FileInputStream(filePath);
             XSSFWorkbook wookbook = new XSSFWorkbook(fis); // 创建对Excel工作簿文件的引用
             // 遍历所有sheet
-            Map<String, String> sheet_map = new HashMap<>();
 
             XSSFSheet sheet = wookbook.getSheetAt(0); // 在Excel文档中，第page张工作表的缺省索引是0
             int cells = 0;// 当前sheet的行数
@@ -69,7 +68,7 @@ public class ExcelUtil {
                     if (cellValue == null) {
                         cellValue = "";
                     }
-                    sb.append(cellValue).append(ExcelContant.SEPARATOR);
+                    headList.add(cellValue);
                 }
             }
             //封装每个sheet入map
@@ -79,15 +78,14 @@ public class ExcelUtil {
                 fis.close();
             }
         }
-        return sb.toString();
+        return headList;
     }
 
-    private static String readExcel2003Head(String filePath) throws IOException {
+    private static List<String> readExcel2003Head(String filePath) throws IOException {
         // 返回结果集
         FileInputStream fis = null;
 
-        StringBuilder sb = null;
-
+        List<String> headList = new ArrayList<>();
         try {
             fis = new FileInputStream(filePath);
             HSSFWorkbook wookbook = new HSSFWorkbook(fis); // 创建对Excel工作簿文件的引用
@@ -97,7 +95,6 @@ public class ExcelUtil {
             // 遍历sheet中所有的行
             HSSFRow firstRow = sheet.getRow(0);
             int cells = firstRow.getPhysicalNumberOfCells();
-            sb = new StringBuilder();
             for (int j = 0; j < cells; j++) {
                 // 获取到列的值
                 HSSFCell cell = firstRow.getCell(j);
@@ -105,7 +102,7 @@ public class ExcelUtil {
                 if (cellValue == null) {
                     cellValue = "";
                 }
-                sb.append(cellValue).append(ExcelContant.SEPARATOR);
+                headList.add(cellValue);
             }
         } finally {
             if (fis != null) {
@@ -113,7 +110,7 @@ public class ExcelUtil {
                 fis.close();
             }
         }
-        return sb.toString();
+        return headList;
     }
 
     /**
@@ -725,7 +722,7 @@ public class ExcelUtil {
         return update;
     }
 
-    private static String readCsvHead(String filePath) {
+    private static List<String> readCsvHead(String filePath) {
         // 返回结果集
         File file = new File(filePath);
         FileInputStream fis = null;
@@ -737,8 +734,13 @@ public class ExcelUtil {
             isr = new InputStreamReader(fis, "GBK");
             br = new BufferedReader(isr);
             line = br.readLine();
+            if(StringUtils.isEmpty(line)){
+                return new ArrayList<>();
+            }
+            return Arrays.stream(line.split(",")).collect(Collectors.toList());
         } catch (IOException ex) {
             log.error("文件[{}]读取失败", filePath, ex);
+            throw new RuntimeException(ex);
         } finally {
             if (br != null) {
                 try {
@@ -748,7 +750,6 @@ public class ExcelUtil {
                 }
             }
         }
-        return line;
     }
 
     private static List<ExcelData> readCsv(String filePath) throws IOException {
