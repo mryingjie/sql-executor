@@ -8,6 +8,7 @@ import com.heitaox.sql.executor.core.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -508,8 +509,8 @@ public class ExcelUtil {
         String cellValue = null;
         if (cell == null)
             return null;
-        switch (cell.getCellType()) {
-            case HSSFCell.CELL_TYPE_NUMERIC:
+        switch (cell.getCellTypeEnum()) {
+            case NUMERIC:
                 if (HSSFDateUtil.isCellDateFormatted(cell)) {
                     SimpleDateFormat sdf = new SimpleDateFormat(
                             "yyyy-MM-dd HH:mm:ss");
@@ -519,19 +520,19 @@ public class ExcelUtil {
                 }
                 cellValue = df.format(cell.getNumericCellValue());
                 break;
-            case HSSFCell.CELL_TYPE_STRING:
+            case STRING:
                 cellValue = String.valueOf(cell.getStringCellValue());
                 break;
-            case HSSFCell.CELL_TYPE_FORMULA:
+            case FORMULA:
                 cellValue = String.valueOf(cell.getCellFormula());
                 break;
-            case HSSFCell.CELL_TYPE_BLANK:
+            case BLANK:
                 cellValue = null;
                 break;
-            case HSSFCell.CELL_TYPE_BOOLEAN:
+            case BOOLEAN:
                 cellValue = String.valueOf(cell.getBooleanCellValue());
                 break;
-            case HSSFCell.CELL_TYPE_ERROR:
+            case ERROR:
                 cellValue = String.valueOf(cell.getErrorCellValue());
                 break;
         }
@@ -546,8 +547,8 @@ public class ExcelUtil {
         String cellValue = null;
         if (cell == null)
             return null;
-        switch (cell.getCellType()) {
-            case XSSFCell.CELL_TYPE_NUMERIC:
+        switch (cell.getCellTypeEnum()) {
+            case NUMERIC:
                 if (HSSFDateUtil.isCellDateFormatted(cell)) {
                     SimpleDateFormat sdf = new SimpleDateFormat(
                             "yyyy-MM-dd HH:mm:ss");
@@ -557,19 +558,19 @@ public class ExcelUtil {
                 }
                 cellValue = df.format(cell.getNumericCellValue());
                 break;
-            case XSSFCell.CELL_TYPE_STRING:
+            case STRING:
                 cellValue = String.valueOf(cell.getStringCellValue());
                 break;
-            case XSSFCell.CELL_TYPE_FORMULA:
+            case FORMULA:
                 cellValue = String.valueOf(cell.getCellFormula());
                 break;
-            case XSSFCell.CELL_TYPE_BLANK:
+            case BLANK:
                 cellValue = null;
                 break;
-            case XSSFCell.CELL_TYPE_BOOLEAN:
+            case BOOLEAN:
                 cellValue = String.valueOf(cell.getBooleanCellValue());
                 break;
-            case XSSFCell.CELL_TYPE_ERROR:
+            case ERROR:
                 cellValue = String.valueOf(cell.getErrorCellValue());
                 break;
         }

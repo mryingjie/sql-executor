@@ -3,6 +3,7 @@ package com.heitaox.sql.executor.source.file;
 import com.heitaox.sql.executor.core.entity.ExcelData;
 import com.heitaox.sql.executor.core.entity.PredicateEntity;
 import com.heitaox.sql.executor.core.util.ClassConvertUtil;
+import com.heitaox.sql.executor.core.util.StringUtils;
 import com.heitaox.sql.executor.source.FileDataSource;
 import joinery.DataFrame;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 
@@ -44,7 +46,9 @@ public class ExcelDataSource implements FileDataSource {
             for (int i = 0; i < rows.size(); i++) {
                 List<String> row = rows.get(i);
                 if (i == 0) {
-                    Object[] columnsWithAlias = row.stream().map(column -> tableAlias + "." + column).toArray();
+                    Object[] columnsWithAlias = row.stream()
+                            .filter(StringUtils::isNotEmpty)
+                            .map(column -> tableAlias + "." + column).toArray();
                     dataFrame.add(columnsWithAlias);
                     for (int j = 0; j < row.size(); j++) {
                         Class aClass = schema.get(row.get(i));
